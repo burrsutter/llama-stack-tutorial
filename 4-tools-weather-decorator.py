@@ -65,6 +65,8 @@ messages = [
     {"role": "user", "content": "What is the temperature in Atlanta today?"},
 ]
 
+logger.info("what is this %s", get_weather.get_tool_definition())
+
 response = client.inference.chat_completion(
     model_id=LLAMA_STACK_MODEL,
     messages=messages,
@@ -74,3 +76,52 @@ response = client.inference.chat_completion(
 )
 
 logger.info(response.completion_message.content)
+
+
+# --------------------------------------------------------------
+# Step 4: Debugging output
+# --------------------------------------------------------------
+
+logger.info(type(response.completion_message))
+logger.info(response.completion_message)
+
+logger.info("Tools to be invoked?")
+logger.info(response.completion_message.tool_calls)
+
+
+# for debugging what is in messages
+def log_messages(messages):
+    logger.info("********************")
+    logger.info(f"Total messages: {len(messages)}")
+
+    for i, message in enumerate(messages):
+            logger.info(f"Message {i + 1} - Type: {type(message)}")
+
+            # If the message is a dictionary, print it nicely
+            if isinstance(message, dict):
+                logger.info(json.dumps(message, indent=4))  # Pretty print JSON
+                
+            # If it's a list, iterate over its items and print them
+            elif isinstance(message, list):
+                logger.info(f"List with {len(message)} items:")
+                for j, item in enumerate(message):
+                    logger.info(f"  Item {j + 1}: {item}")
+
+            # If it's a CompletionMessage, extract useful attributes
+            elif isinstance(message, CompletionMessage):                
+                logger.info(f"Role: {message.role}")
+                logger.info(f"Content: {message.content}")
+                if message.tool_calls:
+                    logger.info("Tool Calls:")
+                    for tool_call in message.tool_calls:
+                        logger.info(f"  - Name: {tool_call.tool_name}")
+                        logger.info(f"  - Arguments: {tool_call.arguments}")
+
+            # If it's another type, just print it
+            else:
+                logger.info(f"Unknown type: {message}")
+
+    logger.info("********************")
+
+
+

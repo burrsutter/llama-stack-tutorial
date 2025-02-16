@@ -1,8 +1,11 @@
 import os
 from llama_stack_client import LlamaStackClient
+from llama_stack_client.types import CompletionMessage
 import requests
-import logging
+import json
+from pydantic import BaseModel, Field
 
+import logging
 # setup logger
 logging.basicConfig(
     level=logging.INFO,
@@ -41,6 +44,7 @@ def get_weather(latitude, longitude):
         # f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph"
     )
     data = response.json()
+    logger.info(data)
     return data["current"]
 
 
@@ -50,8 +54,7 @@ def get_weather(latitude, longitude):
 
 tool = [
     {
-        "tool_name": "get_weather",
-        "name": "get_weather",
+        "tool_name": "get_weather",        
         "description": "Get current temperature for provided coordinates in celsius.",
         "parameters": {            
             "latitude": {
@@ -66,7 +69,6 @@ tool = [
     }
 ]
 
-logger.info(type(tool))
 
 # --------------------------------------------------------------
 # Step 4: Call the model with the tool
@@ -88,5 +90,116 @@ response = client.inference.chat_completion(
     tool_choice="auto"
 )
 
+# --------------------------------------------------------------
+# Step 5: Debugging output
+# --------------------------------------------------------------
+
 logger.info(type(response.completion_message))
 logger.info(response.completion_message)
+
+logger.info("Tools to be invoked?")
+logger.info(response.completion_message.tool_calls)
+
+
+# for debugging what is in messages
+def log_messages(messages):
+    logger.info("********************")
+    logger.info(f"Total messages: {len(messages)}")
+
+    for i, message in enumerate(messages):
+            logger.info(f"Message {i + 1} - Type: {type(message)}")
+
+            # If the message is a dictionary, print it nicely
+            if isinstance(message, dict):
+                logger.info(json.dumps(message, indent=4))  # Pretty print JSON
+                
+            # If it's a list, iterate over its items and print them
+            elif isinstance(message, list):
+                logger.info(f"List with {len(message)} items:")
+                for j, item in enumerate(message):
+                    logger.info(f"  Item {j + 1}: {item}")
+
+            # If it's a CompletionMessage, extract useful attributes
+            elif isinstance(message, CompletionMessage):                
+                logger.info(f"Role: {message.role}")
+                logger.info(f"Content: {message.content}")
+                if message.tool_calls:
+                    logger.info("Tool Calls:")
+                    for tool_call in message.tool_calls:
+                        logger.info(f"  - Name: {tool_call.tool_name}")
+                        logger.info(f"  - Arguments: {tool_call.arguments}")
+
+            # If it's another type, just print it
+            else:
+                logger.info(f"Unknown type: {message}")
+
+    logger.info("********************")
+
+
+# --------------------------------------------------------------
+# Step 6: Execute get_weather function callback
+# --------------------------------------------------------------
+
+
+def call_function(name, args):
+    if name == "get_weather":
+        return get_weather(**args)
+
+
+if response.completion_message.tool_calls:
+    for tool_call in response.completion_message.tool_calls:
+        name = tool_call.tool_name
+        logger.info("tool_call %s", tool_call)        
+        logger.info("arguments value %s", tool_call.arguments)
+        args = tool_call.arguments
+        logger.info("What? %s", response.completion_message)
+        messages.append(response.completion_message)
+
+        result = call_function(name, args)
+        messages.append(
+            {"role": "tool", "tool_call_id": tool_call.call_id, "content": json.dumps(result)}
+        )
+        log_messages(messages)
+
+
+# --------------------------------------------------------------
+# Step 7: Describe result and call model again
+# --------------------------------------------------------------
+
+class WeatherResponse(BaseModel):
+    temperature: float = Field(
+        description="The current temperature in celsius for the given location."
+    )
+    response: str = Field(
+        description="A natural language response to the user's question."
+    )
+
+
+response = client.inference.chat_completion(
+    model_id=LLAMA_STACK_MODEL,
+    messages=messages,
+    tools=tool,
+    tool_prompt_format="python_list",
+    tool_choice="auto",
+    response_format={
+       "type": "json_schema",
+       "json_schema": WeatherResponse.model_json_schema(),
+    }    
+)
+
+# --------------------------------------------------------------
+# Step 7: Check model response
+# --------------------------------------------------------------
+
+# Parse and validate the JSON response
+try:
+    response_data = json.loads(response.completion_message.content)
+    weather = WeatherResponse(**response_data)    
+    print("-------")
+    print(weather)
+    print("-------")
+    print("Temperature:   ", weather.temperature)
+    print("Description:   ", weather.description)
+
+except (json.JSONDecodeError, ValueError) as e:
+    print(f"Invalid format: {e}")
