@@ -44,7 +44,7 @@ def get_weather(latitude, longitude):
         # f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph"
     )
     data = response.json()
-    logger.info(data)
+    logger.debug(data)
     return data["current"]
 
 
@@ -94,46 +94,46 @@ response = client.inference.chat_completion(
 # Step 5: Debugging output
 # --------------------------------------------------------------
 
-logger.info(type(response.completion_message))
-logger.info(response.completion_message)
+logger.debug(type(response.completion_message))
+logger.debug(response.completion_message)
 
-logger.info("Tools to be invoked?")
-logger.info(response.completion_message.tool_calls)
+logger.debug("Tools to be invoked?")
+logger.debug(response.completion_message.tool_calls)
 
 
 # for debugging what is in messages
 def log_messages(messages):
-    logger.info("********************")
-    logger.info(f"Total messages: {len(messages)}")
+    logger.debug("********************")
+    logger.debug(f"Total messages: {len(messages)}")
 
     for i, message in enumerate(messages):
-            logger.info(f"Message {i + 1} - Type: {type(message)}")
+            logger.debug(f"Message {i + 1} - Type: {type(message)}")
 
             # If the message is a dictionary, print it nicely
             if isinstance(message, dict):
-                logger.info(json.dumps(message, indent=4))  # Pretty print JSON
+                logger.debug(json.dumps(message, indent=4))  # Pretty print JSON
                 
             # If it's a list, iterate over its items and print them
             elif isinstance(message, list):
-                logger.info(f"List with {len(message)} items:")
+                logger.debug(f"List with {len(message)} items:")
                 for j, item in enumerate(message):
-                    logger.info(f"  Item {j + 1}: {item}")
+                    logger.debug(f"  Item {j + 1}: {item}")
 
             # If it's a CompletionMessage, extract useful attributes
             elif isinstance(message, CompletionMessage):                
-                logger.info(f"Role: {message.role}")
-                logger.info(f"Content: {message.content}")
+                logger.debug(f"Role: {message.role}")
+                logger.debug(f"Content: {message.content}")
                 if message.tool_calls:
-                    logger.info("Tool Calls:")
+                    logger.debug("Tool Calls:")
                     for tool_call in message.tool_calls:
-                        logger.info(f"  - Name: {tool_call.tool_name}")
-                        logger.info(f"  - Arguments: {tool_call.arguments}")
+                        logger.debug(f"  - Name: {tool_call.tool_name}")
+                        logger.debug(f"  - Arguments: {tool_call.arguments}")
 
             # If it's another type, just print it
             else:
-                logger.info(f"Unknown type: {message}")
+                logger.debug(f"Unknown type: {message}")
 
-    logger.info("********************")
+    logger.debug("********************")
 
 
 # --------------------------------------------------------------
@@ -149,15 +149,21 @@ def call_function(name, args):
 if response.completion_message.tool_calls:
     for tool_call in response.completion_message.tool_calls:
         name = tool_call.tool_name
-        logger.info("tool_call %s", tool_call)        
-        logger.info("arguments value %s", tool_call.arguments)
+        logger.debug("tool_call %s", tool_call)        
+        logger.debug("arguments value %s", tool_call.arguments)
         args = tool_call.arguments
-        logger.info("What? %s", response.completion_message)
+        logger.debug("What? %s", response.completion_message)
         messages.append(response.completion_message)
 
         result = call_function(name, args)
+
         messages.append(
-            {"role": "tool", "tool_call_id": tool_call.call_id, "content": json.dumps(result)}
+            {
+                "role": "tool",
+                "call_id": tool_call.call_id,  
+                "tool_name": tool_call.tool_name,  
+                "content": json.dumps(result)
+            }
         )
         log_messages(messages)
 
@@ -199,7 +205,7 @@ try:
     print(weather)
     print("-------")
     print("Temperature:   ", weather.temperature)
-    print("Description:   ", weather.description)
+    print("Description:   ", weather.response)
 
 except (json.JSONDecodeError, ValueError) as e:
     print(f"Invalid format: {e}")
