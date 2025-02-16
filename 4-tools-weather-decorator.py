@@ -1,8 +1,10 @@
 import os
 from llama_stack_client import LlamaStackClient
 from llama_stack_client.lib.agents.client_tool import client_tool
+from llama_stack_client.types import CompletionMessage
 import requests
 import logging
+import json
 
 # setup logger
 logging.basicConfig(
@@ -65,12 +67,50 @@ messages = [
     {"role": "user", "content": "What is the temperature in Atlanta today?"},
 ]
 
-logger.info("what is this %s", get_weather.get_tool_definition())
+
+# tools = [get_weather.get_tool_definition()]
+
+# something is not right with .get_tool_definition()
+# if not isinstance(tools[0], dict):
+#     raise ValueError("Tool definition must be a dictionary!")
+
+# logger.debug("Tool definition BEFORE: %s", json.dumps(tools[0], indent=4))
+
+# def replace_name_with_tool_name(tools):
+#     if isinstance(tools, dict):
+#         return {("tool_name" if k == "name" else k): replace_name_with_tool_name(v) for k, v in tools.items()}
+#     elif isinstance(tools, list):
+#         return [replace_name_with_tool_name(item) for item in tools]
+#     else:
+#         return tools
+
+# tools = replace_name_with_tool_name(tools)
+
+# logger.debug("Tool definition AFTER: %s", json.dumps(tools[0], indent=4))
+
+tools = [
+    {
+        "tool_name": "get_weather",        
+        "description": "Get current temperature for provided coordinates in celsius.",
+        "parameters": {            
+            "latitude": {
+                "param_type": "float",
+                "description": "latitude of city"
+            },
+            "longitude": {
+                "param_type": "float",
+                "description": "longitude of city"
+            }
+        }
+    }
+]
+
+
 
 response = client.inference.chat_completion(
     model_id=LLAMA_STACK_MODEL,
     messages=messages,
-    tools=[get_weather.get_tool_definition()],
+    tools=tools,
     tool_prompt_format="python_list",    
     tool_choice="auto"
 )
