@@ -1,5 +1,6 @@
 import os
 from llama_stack_client import LlamaStackClient
+from llama_stack_client.lib.agents.client_tool import client_tool
 import requests
 import logging
 
@@ -31,47 +32,31 @@ client = LlamaStackClient(base_url=os.getenv("LLAMA_STACK_SERVER"))
 # Step 2: Define the tool (function) that we want to call
 # --------------------------------------------------------------
 
-def get_weather(latitude, longitude):
-    """This is a publically available API that returns the weather for a given location."""
-    logger.info("get_weather tool invoked")    
+@client_tool
+def get_weather(latitude: float, longitude: float) -> dict:
+    """gets the current weather 
+    
+    :param latitude: latitude of city
+    :param longitude: longitude of city
+    :returns: Dictionary containing the temperature and wind speed
+    """
+    
+    logger.info("get_weather Tool invoked with latitude " + latitude + " and logitude " + longitude)
+    # https://api.open-meteo.com/v1/forecast?latitude=33.749&longitude=-84.388&current=temperature_2m
     response = requests.get(
         # celsius, metric 
-        f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
+        # f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m"
         # fahrenheit, imperial
-        # f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph"
+        f"https://api.open-meteo.com/v1/forecast?latitude={latitude}&longitude={longitude}&current=temperature_2m,wind_speed_10m&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m&temperature_unit=fahrenheit&wind_speed_unit=mph"
     )
     data = response.json()
+    logger.info(data)
     return data["current"]
 
 
 # --------------------------------------------------------------
-# Step 3: Describe the get_weather tool 
+# Step 3: Call the model with the tool
 # --------------------------------------------------------------
-
-tool = [
-    {
-        "tool_name": "get_weather",
-        "name": "get_weather",
-        "description": "Get current temperature for provided coordinates in celsius.",
-        "parameters": {            
-            "latitude": {
-                "param_type": "float",
-                "description": "latitude of city"
-            },
-            "longitude": {
-                "param_type": "float",
-                "description": "longitude of city"
-            }
-        }
-    }
-]
-
-logger.info(type(tool))
-
-# --------------------------------------------------------------
-# Step 4: Call the model with the tool
-# --------------------------------------------------------------
-
 
 system_prompt = "You are a helpful weather assistant."
 
@@ -83,10 +68,9 @@ messages = [
 response = client.inference.chat_completion(
     model_id=LLAMA_STACK_MODEL,
     messages=messages,
-    tools=tool,
-    tool_prompt_format="python_list",
+    tools=[get_weather.get_tool_definition()],
+    tool_prompt_format="python_list",    
     tool_choice="auto"
 )
 
-logger.info(type(response.completion_message))
-logger.info(response.completion_message)
+logger.info(response.completion_message.content)
