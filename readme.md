@@ -1,15 +1,22 @@
 https://llama-stack.readthedocs.io/en/latest/getting_started/index.html
 
 ## Ollama server
+
+**Terminal 1**
+
 ```
 ollama serve
 ```
+
+**Terminal 2**
 
 ```
 ollama run llama3.2:3b-instruct-fp16 --keepalive 60m
 ```
 
 ## Llama Stack Server
+
+**Terminal 3**
 
 ```
 export LLAMA_STACK_MODEL="meta-llama/Llama-3.2-3B-Instruct"
@@ -19,8 +26,11 @@ export LLAMA_STACK_SERVER=http://localhost:$LLAMA_STACK_PORT
 ```
 
 ```
+rm -rf ~/.llama
 mkdir -p ~/.llama
 ```
+
+**Terminal 3**
 
 ```
 docker run -it \
@@ -35,6 +45,7 @@ docker run -it \
 
 ## Client library CLI
 
+**Terminal 4**
 ```
 python3.11 -m venv venv
 source venv/bin/activate
@@ -101,9 +112,22 @@ engaging in conversation. How can I assist you today?',
 
 ## curl
 
+I use `jq` to parse the JSON returned by the curl command.  It is optional, your eyeballs can parse the JSON.
+
+```
+brew install jq
+```
+
 ```
 curl -sS $LLAMA_STACK_SERVER/v1/models \
   -H "Content-Type: application/json" | jq -r '.data[].identifier'
+```
+
+Results:
+
+```
+meta-llama/Llama-3.2-3B-Instruct
+all-MiniLM-L6-v2
 ```
 
 ```
@@ -120,23 +144,10 @@ curl -sS $LLAMA_STACK_SERVER/v1/inference/chat-completion \
 
 ## Python
 
+Check out requirements.txt and install the deps if needed
+
 ```
-pip install llama_stack
-pip install aiosqlite
-pip install ollama
-pip install faiss-cpu
-pip install chardet
-pip install pypdf
-pip install datasets
-pip install bwrap
-pip install opentelemetry-instrumentation
-pip install opentelemetry.exporter
-pip install opentelemetry-exporter-prometheus
-pip install opentelemetry-exporter-otlp
-pip install autoevals
-pip install sentence.transformers
-pip install openai
-pip install sqlite_vec
+pip install -r requirements.txt
 ```
 
 To prove connectivity and find out more about the capabilities of the server
@@ -149,155 +160,14 @@ Code originally from  https://llama-stack.readthedocs.io/en/latest/getting_start
 python 0-test.py
 ```
 
+Lots of configuration output and then a haiku
+
 ```
-Using config ollama:
-apis:
-- agents
-- datasetio
-- eval
-- inference
-- safety
-- scoring
-- telemetry
-- tool_runtime
-- vector_io
-benchmarks: []
-container_image: null
-datasets: []
-image_name: ollama
-metadata_store:
-  db_path: /Users/burr/.llama/distributions/ollama/registry.db
-  namespace: null
-  type: sqlite
-models:
-- metadata: {}
-  model_id: meta-llama/Llama-3.2-3B-Instruct
-  model_type: !!python/object/apply:llama_stack.apis.models.models.ModelType
-  - llm
-  provider_id: ollama
-  provider_model_id: null
-- metadata:
-    embedding_dimension: 384
-  model_id: all-MiniLM-L6-v2
-  model_type: !!python/object/apply:llama_stack.apis.models.models.ModelType
-  - embedding
-  provider_id: sentence-transformers
-  provider_model_id: null
-providers:
-  agents:
-  - config:
-      persistence_store:
-        db_path: /Users/burr/.llama/distributions/ollama/agents_store.db
-        namespace: null
-        type: sqlite
-    provider_id: meta-reference
-    provider_type: inline::meta-reference
-  datasetio:
-  - config: {}
-    provider_id: huggingface
-    provider_type: remote::huggingface
-  - config: {}
-    provider_id: localfs
-    provider_type: inline::localfs
-  eval:
-  - config: {}
-    provider_id: meta-reference
-    provider_type: inline::meta-reference
-  inference:
-  - config:
-      url: http://localhost:11434
-    provider_id: ollama
-    provider_type: remote::ollama
-  - config: {}
-    provider_id: sentence-transformers
-    provider_type: inline::sentence-transformers
-  safety:
-  - config: {}
-    provider_id: llama-guard
-    provider_type: inline::llama-guard
-  scoring:
-  - config: {}
-    provider_id: basic
-    provider_type: inline::basic
-  - config: {}
-    provider_id: llm-as-judge
-    provider_type: inline::llm-as-judge
-  - config:
-      openai_api_key: '********'
-    provider_id: braintrust
-    provider_type: inline::braintrust
-  telemetry:
-  - config:
-      service_name: llama-stack
-      sinks: sqlite
-      sqlite_db_path: /Users/burr/.llama/distributions/ollama/trace_store.db
-    provider_id: meta-reference
-    provider_type: inline::meta-reference
-  tool_runtime:
-  - config:
-      api_key: '********'
-      max_results: 3
-    provider_id: brave-search
-    provider_type: remote::brave-search
-  - config:
-      api_key: '********'
-      max_results: 3
-    provider_id: tavily-search
-    provider_type: remote::tavily-search
-  - config: {}
-    provider_id: code-interpreter
-    provider_type: inline::code-interpreter
-  - config: {}
-    provider_id: rag-runtime
-    provider_type: inline::rag-runtime
-  vector_io:
-  - config:
-      kvstore:
-        db_path: /Users/burr/.llama/distributions/ollama/faiss_store.db
-        namespace: null
-        type: sqlite
-    provider_id: faiss
-    provider_type: inline::faiss
-  - config:
-      db_path: /Users/burr/.llama/distributions/ollama/sqlite_vec.db
-      kvstore:
-        db_path: /Users/burr/.llama/distributions/ollama/sqlite_vec.db
-        namespace: null
-        type: sqlite
-    provider_id: sqlite_vec
-    provider_type: inline::sqlite_vec
-scoring_fns: []
-server:
-  port: 8321
-  tls_certfile: null
-  tls_keyfile: null
-shields: []
-tool_groups:
-- args: null
-  mcp_endpoint: null
-  provider_id: tavily-search
-  toolgroup_id: builtin::websearch
-- args: null
-  mcp_endpoint: null
-  provider_id: rag-runtime
-  toolgroup_id: builtin::rag
-- args: null
-  mcp_endpoint: null
-  provider_id: code-interpreter
-  toolgroup_id: builtin::code_interpreter
-vector_dbs: []
-version: '2'
-
---- Available models: ---
-- all-MiniLM-L6-v2
-- meta-llama/Llama-3.2-3B-Instruct
-
 Here is a haiku about coding:
 
 Lines of code unfold
 Logic flows through digital night
 Beauty in the bits
-Error exporting span to SQLite: Cannot operate on a closed database.
 ```
 
 ### List of models
@@ -320,16 +190,35 @@ python 2-chat-completions.py
 
 ### Structured Output
 
+```
+python 3-structured-output.py 
+```
+
 ### Tools
 
+```
+python 4-tools-weather.py
+```
+
 ### RAG
+
+NOT working at this moment, something wrong in the docs
 
 ```
 python 5-basic-rag.py
 ```
+
+from llama_stack_client import Agent, AgentEventLogger, RAGDocument
+ImportError: cannot import name 'Agent' from 'llama_stack_client'
+
 
 ### Agents
 
 From https://github.com/amfred/llama-stack-apps/tree/amf-test-client/examples/agents
 
 
+## ToDos
+
+https://llama-stack.readthedocs.io/en/latest/building_applications/rag.html
+versus
+https://github.com/burrsutter/python-plain-agentic-examples/tree/main/rag

@@ -1,0 +1,13 @@
+llama-stack-client
+llama_stack
+aiosqlite
+ollama
+openai
+datasets
+opentelemetry-instrumentation
+opentelemetry-exporter-prometheus
+opentelemetry-exporter-otlp
+faiss-cpu
+mcp
+autoevals
+bwrap
