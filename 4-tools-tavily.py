@@ -27,7 +27,7 @@ client = LlamaStackClient(
     provider_data={"tavily_search_api_key":TAVILY_SEARCH_API_KEY}
 )
 
-search_query="won the last Super Bowl?"
+search_query="Who won the last Super Bowl?"
 
 response = client.tool_runtime.invoke_tool(
     tool_name="web_search", kwargs={"query": search_query}
