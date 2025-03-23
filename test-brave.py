@@ -21,30 +21,31 @@ if not BRAVE_SEARCH_API_KEY:
     raise ValueError("Please set the BRAVE_SEARCH_API_KEY environment variable.")
 
 # Define the API endpoint URL (update this as needed according to your API docs)
-API_URL = "https://api.search.brave.com/api/v1/search"
+API_URL = "https://api.search.brave.com/res/v1/web/search"
 
 # Define the search parameters
 params = {
-    "q": "hello world"  # The search query
+    "q": "hello world",  # The search query
+    "count": 5
 }
 
-# Set up the headers including the API key (assuming Bearer token auth)
+# Set up the headers including the API key 
 headers = {
-    "Authorization": f"Bearer {BRAVE_SEARCH_API_KEY}",
-    "Content-Type": "application/json"
+    "Accept": "application/json",
+    "X-Subscription-Token": BRAVE_SEARCH_API_KEY
 }
 
 # Make the GET request
-response = requests.post(API_URL, headers=headers, json=params)
+response = requests.get(API_URL, headers=headers, params=params)
 
 # Check for a successful response and print the results
 if response.status_code == 200:
     results = response.json()
-    print("Search results for 'hello world':")
-    for result in results.get("results", []):
-        print(f"Title: {result.get('title')}")
-        print(f"URL: {result.get('url')}")
-        print("-----")
+    print(f"Search results for 'hello world': ")
+    for i, result in enumerate(results.get("web", {}).get("results", []), 1):
+        print(f"{i}. {result.get('title')}")
+        print(f"   {result.get('url')}")
+        print(f"   {result.get('description')}\n")
 else:
     print(f"Error: {response.status_code}")
     print(response.text)
