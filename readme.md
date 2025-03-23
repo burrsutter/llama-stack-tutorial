@@ -250,6 +250,30 @@ python 3-structured-output.py
 python 4-tools-weather.py
 ```
 
+### Agents
+
+```
+python 5-base-agent.py
+```
+
+```
+python 5-basic-agent-websearch-tool.py
+```
+
+```
+The winner of the last Super Bowl was the Philadelphia Eagles who defeated the Kansas City Chiefs with a score of 40-22 in Super Bowl LIX.
+```
+
+With Tavily Search (already pre-registered, see run `python 0-test.py`)
+
+export TAVILY_SEARCH_API_KEY=your-key
+
+And there is a `tavily-test.py` to test your key/connectivity
+
+```
+python 5-base-agent-tavily-tool.py
+```
+
 ### RAG
 
 As of March 23, the 0.1.8 version is not on pypi.org, so install client directly from github
@@ -272,12 +296,6 @@ pip install autoevals
 ```
 python 5-basic-rag.py
 ```
-
-
-
-### Agents
-
-From https://github.com/amfred/llama-stack-apps/tree/amf-test-client/examples/agents
 
 
 ## ToDos
