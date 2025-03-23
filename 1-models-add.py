@@ -22,7 +22,7 @@ client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
 
 # Register a model
 model = client.models.register(
-    model_id="meta-llama/Llama-3.1:8B-Instruct",
+    model_id="meta-llama/Llama-3.1-8B-Instruct",
     model_type="llm",
     provider_id="ollama",
     provider_model_id="llama3.1:8b-instruct-fp16",

@@ -1,7 +1,7 @@
 import os
 import json
 from llama_stack_client import LlamaStackClient
-
+from rich.pretty import pprint
 from dotenv import load_dotenv
 import logging
 
@@ -22,15 +22,29 @@ TAVILY_SEARCH_API_KEY=os.getenv("TAVILY_SEARCH_API_KEY")
 print(LLAMA_STACK_SERVER)
 print(LLAMA_STACK_MODEL)
 
+search_query="Who won the last Super Bowl?"
+
 client = LlamaStackClient(
     base_url=os.getenv("LLAMA_STACK_SERVER"),
     provider_data={"tavily_search_api_key":TAVILY_SEARCH_API_KEY}
 )
 
-search_query="Who won the last Super Bowl?"
+# client.toolgroups.unregister(
+#     toolgroup_id="builtin::websearch"
+# )
+
+# client.toolgroups.register(
+#     toolgroup_id="builtin::websearch",
+#     provider_id="tavily-search",
+#     args={"max_results": 10},
+# )
+
+for toolgroup in client.toolgroups.list():
+    pprint(toolgroup)
+
 
 response = client.tool_runtime.invoke_tool(
-    tool_name="web_search", kwargs={"query": search_query}
+    tool_name="tavily-search", kwargs={"query": search_query}
 )
 
 web_search_results = json.loads(response.content)

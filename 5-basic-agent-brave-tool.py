@@ -19,18 +19,23 @@ logger = logging.getLogger(__name__)
 
 LLAMA_STACK_SERVER=os.getenv("LLAMA_STACK_SERVER")
 LLAMA_STACK_MODEL=os.getenv("LLAMA_STACK_MODEL")
-
+BRAVE_SEARCH_API_KEY=os.getenv("BRAVE_SEARCH_API_KEY")
 
 print(LLAMA_STACK_SERVER)
 print(LLAMA_STACK_MODEL)
+print(BRAVE_SEARCH_API_KEY)
 
+provider_data={
+    "brave_search_api_key": BRAVE_SEARCH_API_KEY
+}
 client = LlamaStackClient(
-    base_url=os.getenv("LLAMA_STACK_SERVER")
+    base_url=LLAMA_STACK_SERVER,
+    provider_data=provider_data
 )
 
 agent = Agent(
     client,
-    model=LLAMA_STACK_MODEL,  # or another valid model identifier
+    model=LLAMA_STACK_MODEL, 
     instructions="You are a helpful assistant.",  # system prompt instructions for the agent
     tools=[
         "builtin::websearch", 

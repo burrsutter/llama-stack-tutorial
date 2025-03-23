@@ -86,7 +86,7 @@ response = client.inference.chat_completion(
     model_id=LLAMA_STACK_MODEL,
     messages=messages,
     tools=tool,
-    tool_prompt_format="python_list",
+    tool_prompt_format="json",
     tool_choice="auto"
 )
 
@@ -185,7 +185,7 @@ response = client.inference.chat_completion(
     model_id=LLAMA_STACK_MODEL,
     messages=messages,
     tools=tool,
-    tool_prompt_format="python_list",
+    tool_prompt_format="json",
     tool_choice="auto",
     response_format={
        "type": "json_schema",

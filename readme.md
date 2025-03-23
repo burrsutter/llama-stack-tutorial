@@ -33,6 +33,8 @@ export LLAMA_STACK_PORT=8321
 export LLAMA_STACK_SERVER=http://localhost:$LLAMA_STACK_PORT
 ```
 
+Reset data
+
 ```
 rm -rf ~/.llama
 mkdir -p ~/.llama
@@ -305,3 +307,13 @@ MCP Servers
 https://llama-stack.readthedocs.io/en/latest/building_applications/rag.html
 versus
 https://github.com/burrsutter/python-plain-agentic-examples/tree/main/rag
+
+
+## Clean Docker
+
+```
+docker kill $(docker ps -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+docker system prune -a --volumes
+```
