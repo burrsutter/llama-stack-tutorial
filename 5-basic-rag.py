@@ -2,7 +2,27 @@ import os
 import uuid
 from termcolor import cprint
 
-from llama_stack_client import Agent, AgentEventLogger, RAGDocument
+# this might work with 0.1.8 and https://llama-stack.readthedocs.io/en/latest/getting_started/index.html#your-first-rag-agent
+# from llama_stack_client import Agent, AgentEventLogger, RAGDocument
+# As of March 23, 2025
+# pip install git+https://github.com/meta-llama/llama-stack-client-python.git
+# pip install git+https://github.com/meta-llama/llama-stack-client-python.git
+# pip install llama-stack
+# pip install aiosqlite
+# pip install ollama
+# pip install openai
+# pip install datasets
+# pip install opentelemetry-instrumentation
+# pip install opentelemetry-exporter-otlp
+# pip install faiss-cpu
+# pip install mcp
+# pip install autoevals
+
+from llama_stack_client.lib.agents.agent import Agent
+from llama_stack_client.lib.agents.event_logger import EventLogger as AgentEventLogger
+from llama_stack_client.types.shared_params.document import Document as RAGDocument
+
+
 
 def create_library_client(template="ollama"):
     from llama_stack import LlamaStackAsLibraryClient

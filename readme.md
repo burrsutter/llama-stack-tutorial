@@ -202,14 +202,27 @@ python 4-tools-weather.py
 
 ### RAG
 
-NOT working at this moment, something wrong in the docs
+As of March 23, the 0.1.8 version is not on pypi.org, so install client directly from github
+
+```
+pip install git+https://github.com/meta-llama/llama-stack-client-python.git
+pip install llama-stack
+pip install aiosqlite
+pip install ollama
+pip install openai
+pip install datasets
+pip install opentelemetry-instrumentation
+pip install opentelemetry-exporter-otlp
+pip install faiss-cpu
+pip install mcp
+pip install autoevals
+# pip install opentelemetry-exporter-prometheus
+```
 
 ```
 python 5-basic-rag.py
 ```
 
-from llama_stack_client import Agent, AgentEventLogger, RAGDocument
-ImportError: cannot import name 'Agent' from 'llama_stack_client'
 
 
 ### Agents
@@ -218,6 +231,8 @@ From https://github.com/amfred/llama-stack-apps/tree/amf-test-client/examples/ag
 
 
 ## ToDos
+
+MCP Servers
 
 https://llama-stack.readthedocs.io/en/latest/building_applications/rag.html
 versus
