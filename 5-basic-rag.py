@@ -6,7 +6,6 @@ from termcolor import cprint
 # from llama_stack_client import Agent, AgentEventLogger, RAGDocument
 # As of March 23, 2025
 # pip install git+https://github.com/meta-llama/llama-stack-client-python.git
-# pip install git+https://github.com/meta-llama/llama-stack-client-python.git
 # pip install llama-stack
 # pip install aiosqlite
 # pip install ollama
