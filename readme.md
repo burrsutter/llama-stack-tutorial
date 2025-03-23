@@ -10,8 +10,16 @@ ollama serve
 
 **Terminal 2**
 
+Llama Stack does not dynamically load models even though that is a feature of ollama.  Use the "keepalive" technique otherwise ollama quickly returns that memory back to the host
+
 ```
 ollama run llama3.2:3b-instruct-fp16 --keepalive 60m
+```
+
+To check if the model is still running and in memory
+
+```
+ollama ps
 ```
 
 ## Llama Stack Server
@@ -119,8 +127,7 @@ brew install jq
 ```
 
 ```
-curl -sS $LLAMA_STACK_SERVER/v1/models \
-  -H "Content-Type: application/json" | jq -r '.data[].identifier'
+curl -sS $LLAMA_STACK_SERVER/v1/models -H "Content-Type: application/json" | jq -r '.data[].identifier'
 ```
 
 Results:
@@ -180,6 +187,49 @@ python 1-models.py
 --- Available models: ---
 - all-MiniLM-L6-v2
 - meta-llama/Llama-3.2-3B-Instruct
+```
+
+### Add a model
+
+
+Make sure ollama has the model running
+
+```
+ollama run llama3.1:8b-instruct-fp16 --keepalive 60m
+```
+
+```
+python 1-models-add.py
+```
+
+```
+llama-stack-client models list
+```
+
+```
+Available Models
+
+┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
+┃ model_type ┃ identifier                       ┃ provider_resource_id      ┃ metadata                       ┃ provider_id          ┃
+┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
+│ llm        │ meta-llama/Llama-3.2-3B-Instruct │ llama3.2:3b-instruct-fp16 │                                │ ollama               │
+├────────────┼──────────────────────────────────┼───────────────────────────┼────────────────────────────────┼──────────────────────┤
+│ embedding  │ all-MiniLM-L6-v2                 │ all-MiniLM-L6-v2          │ {'embedding_dimension': 384.0} │ sentence-transforme… │
+├────────────┼──────────────────────────────────┼───────────────────────────┼────────────────────────────────┼──────────────────────┤
+│ llm        │ meta-llama/Llama-3.1:8B-Instruct │ llama3.1:8b-instruct-fp16 │ {'description':                │ ollama               │
+│            │                                  │                           │ 'llama3.1:8b-instruct-fp16 via │                      │
+│            │                                  │                           │ ollama'}                       │                      │
+└────────────┴──────────────────────────────────┴───────────────────────────┴────────────────────────────────┴──────────────────────┘
+
+Total models: 3
+```
+
+### Delete a model
+
+Does not work as of March 23
+
+```
+python 1-models-delete.py
 ```
 
 ### simple chat-completions example

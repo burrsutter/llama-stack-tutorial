@@ -28,7 +28,7 @@ response = client.inference.chat_completion(
         {"role": "system", "content": "You're a helpful assistant."},
         {
             "role": "user",
-            "content": "What length of the Pont des Arts in meters?",
+            "content": "Who is Burr Sutter?",
         },
     ],
     # temperature=0.0, 
