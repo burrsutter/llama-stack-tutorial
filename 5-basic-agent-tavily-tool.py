@@ -20,18 +20,19 @@ logger = logging.getLogger(__name__)
 LLAMA_STACK_SERVER=os.getenv("LLAMA_STACK_SERVER")
 LLAMA_STACK_MODEL=os.getenv("LLAMA_STACK_MODEL")
 TAVILY_SEARCH_API_KEY=os.getenv("TAVILY_SEARCH_API_KEY")
+BRAVE_SEARCH_API_KEY=os.getenv("BRAVE_SEARCH_API_KEY")
 
 print(LLAMA_STACK_SERVER)
 print(LLAMA_STACK_MODEL)
 print(TAVILY_SEARCH_API_KEY)
-
-provider_data={
-    "tavily_search_api_key": TAVILY_SEARCH_API_KEY
-}
+print(BRAVE_SEARCH_API_KEY)
 
 client = LlamaStackClient(
     base_url=LLAMA_STACK_SERVER,
-    provider_data=provider_data
+    provider_data={
+        "tavily_search_api_key" : TAVILY_SEARCH_API_KEY,
+        "brave_search_api_key" : BRAVE_SEARCH_API_KEY
+        }
 )
 
 agent = Agent(

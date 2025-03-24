@@ -299,6 +299,66 @@ pip install autoevals
 python 5-basic-rag.py
 ```
 
+### Shields (Safety, Guardrails)
+
+```
+ollama pull llama-guard3:8b-q4_0
+```
+
+```
+ollama run llama-guard3:8b-q4_0 --keepalive 60m
+```
+
+
+Shut-down any previously running Llama Stack server
+
+```
+docker ps
+```
+
+note: your container id will be different
+
+```
+docker stop fc3eae32f44c
+```
+
+Not sure if the following is needed?
+```
+export SAFETY_MODEL="meta-llama/Llama-Guard-3-8B"
+```
+
+```
+rm -rf ~/.llama
+mkdir -p ~/.llama
+```
+
+```
+docker run -it \
+  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
+  -v ~/.llama:/root/.llama \
+  llamastack/distribution-ollama \
+  --port $LLAMA_STACK_PORT \
+  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
+  --env OLLAMA_URL=http://host.docker.internal:11434
+```
+
+Register the guard/guardian model
+
+```
+python 1-models-add-guard.py
+```
+
+Register the shield and attempt to use it
+
+```
+python 6-shield-content.py
+```
+
+See the registered shields
+
+```
+python list-shields.py
+```
 
 ## ToDos
 

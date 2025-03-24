@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 LLAMA_STACK_SERVER=os.getenv("LLAMA_STACK_SERVER")
 LLAMA_STACK_MODEL=os.getenv("LLAMA_STACK_MODEL")
-TAVILY_SEARCH_API_KEY=os.getenv("TAVILY_SEARCH_API_KEY")
+BRAVE_SEARCH_API_KEY=os.getenv("BRAVE_SEARCH_API_KEY")
 
 print(LLAMA_STACK_SERVER)
 print(LLAMA_STACK_MODEL)
@@ -26,7 +26,7 @@ search_query="Who won the last Super Bowl?"
 
 client = LlamaStackClient(
     base_url=os.getenv("LLAMA_STACK_SERVER"),
-    provider_data={"tavily_search_api_key":TAVILY_SEARCH_API_KEY}
+    provider_data={"brave_search_api_key":BRAVE_SEARCH_API_KEY}
 )
 
 for toolgroup in client.toolgroups.list():
@@ -34,7 +34,7 @@ for toolgroup in client.toolgroups.list():
 
 
 response = client.tool_runtime.invoke_tool(
-    tool_name="web_search", kwargs={"query": search_query}
+    tool_name="brave_search", kwargs={"query": search_query}
 )
 
 if response.error_message:
