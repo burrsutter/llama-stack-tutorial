@@ -25,4 +25,4 @@ def subtract(a: int, b: int) -> int:
 
 if __name__ == "__main__":
     # Initialize and run the server
-    mcp.run(transport='sse')
+    mcp.run()

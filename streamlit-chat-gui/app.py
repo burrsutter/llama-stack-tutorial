@@ -46,9 +46,9 @@ if prompt:
         },
         toolgroups=(
             [
-                # "mcp::my-python-server-math"
-                "mcp::my-node-server-math",
-                "mcp::my-node-server-other"
+                "mcp::my-python-server-math"
+                # "mcp::my-node-server-math",
+                # "mcp::my-node-server-other"
             ]
         ),
         tool_choice="auto",
