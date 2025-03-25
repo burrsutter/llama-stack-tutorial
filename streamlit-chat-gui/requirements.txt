@@ -1,0 +1,3 @@
+streamlit
+llama-stack-client
+dotenv

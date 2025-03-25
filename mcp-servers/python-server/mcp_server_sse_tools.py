@@ -23,10 +23,11 @@ def add(a: int, b: int) -> int:
     return a + b
 
 @mcp.tool()
-def today() -> str:
-    """Today's Date"""
-    print(f"Today is coming your way")
-    return datetime.date.today().strftime("%B %d, %Y")
+def today_date() -> str:
+    """MCP Today's Date as a string"""
+    today = datetime.date.today().strftime("%B %d, %Y")
+    print(f"Today is coming your way: {today}")
+    return (f"Today is {today}")
 
 
 if __name__ == "__main__":
