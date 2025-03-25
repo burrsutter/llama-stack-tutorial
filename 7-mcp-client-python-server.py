@@ -31,11 +31,12 @@ client = LlamaStackClient(
 # client = LlamaStackAsLibraryClient("ollama")
 # client.initialize()
 
-client.toolgroups.register(
-    toolgroup_id="mcp::my-python-server",
-    provider_id="model-context-protocol",
-    mcp_endpoint=URL(uri="http://localhost:8000/sse") 
-)
+# client.toolgroups.register(
+#     toolgroup_id="mcp::my-python-server",
+#     provider_id="model-context-protocol",
+#     # mcp_endpoint=URL(uri="http://localhost:8000/sse") 
+#     mcp_endpoint=URL(uri="http://host.docker.internal:8000/sse") 
+# )
 
 agent = Agent(
     client,
