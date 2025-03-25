@@ -394,28 +394,58 @@ python list-shields.py
 The file system MCP server is one of the easiest, git it up and running in a terminal.
 
 
+New terminal to run the MCP server process
+
 ```
-cd python-server
+cd node-stdio-server-math
+```
+
+See its readme.md for how to start it up
+
+Register the toolgroup
+
+```
+curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::my-node-server-math", "mcp_endpoint" : { "uri" : "http://host.docker.internal:8002/sse"}}' http://localhost:8321/v1/toolgroups
 ```
 
 ```
-python3.11 -m venv venv
-source venv/bin/activate
+python 7-mcp-client-node-server.py
+```
+
+#### Web page fetcher tool
+
+Included in the MCP python-sdk
+
+```
+git clone https://github.com/modelcontextprotocol/python-sdk
 ```
 
 ```
-pip install mcp
+cd python-sdk/examples/servers/simple-tool
 ```
 
+review README.md
 
 ```
-python mcp_server_sse_tools.py
+export MCP_PORT=8005
+uv run mcp-simple-tool --transport sse --port $MCP_PORT
 ```
 
+```
+INFO:     Started server process [84213]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8005 (Press CTRL+C to quit)
+```
 
 ```
-python 7-mcp-python-server.py
+curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::mcp-website-fetcher", "mcp_endpoint" : { "uri" : "http://host.docker.internal:8005/sse"}}' http://localhost:8321/v1/toolgroups
 ```
+
+```
+python 7-mcp-client-web-page-fetcher.py
+```
+
 
 
 ## Library Mode

@@ -41,9 +41,9 @@ client = LlamaStackClient(
 agent = Agent(
     client,
     model=LLAMA_STACK_MODEL,  # or another valid model identifier
-    instructions="You are a helpful assistant.",  # system prompt instructions for the agent
+    instructions="You are a helpful assistant that fetches web pages for people.",  # system prompt instructions for the agent
     enable_session_persistence=False,
-    tools=["mcp::my-node-server-math"]
+    tools=["mcp::mcp-website-fetcher"]
 )
 
 session_id = agent.create_session(f"test-session-{uuid4()}")
@@ -52,7 +52,12 @@ response = agent.create_turn(
     messages=[
         {
             "role": "user",
-            "content": "Add 2 and 2",
+            # "content": "example.com",
+            # "content": "info.cern.ch",
+            # "content": "iana.org/domains/reserved",
+            # "content": "neverssl.com",
+            # "content": "norvig.com",
+            # "content" : "www.gnu.org/licenses/gpl-3.0.txt"
         }
     ],
     session_id=session_id,
