@@ -13,9 +13,12 @@ const server = new McpServer({
 // Add an addition tool
 server.tool("add",
   { a: z.number(), b: z.number() },
-  async ({ a, b }) => ({
-    content: [{ type: "text", text: String(a + b) }]
-  })
+  async ({ a, b }) => {
+    console.log("add tool called with:", a, b);
+    return {
+      content: [{ type: "text", text: String(a + b) }]
+    };
+  }
 );
 
 const app = express();
