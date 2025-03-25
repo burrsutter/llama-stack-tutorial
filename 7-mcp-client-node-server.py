@@ -22,14 +22,14 @@ LLAMA_STACK_MODEL=os.getenv("LLAMA_STACK_MODEL")
 print(LLAMA_STACK_SERVER)
 print(LLAMA_STACK_MODEL)
 
-# from llama_stack_client import LlamaStackClient
-# client = LlamaStackClient(
-#     base_url=os.getenv("LLAMA_STACK_SERVER")
-# )
+from llama_stack_client import LlamaStackClient
+client = LlamaStackClient(
+    base_url=LLAMA_STACK_SERVER
+)
 
-from llama_stack import LlamaStackAsLibraryClient
-client = LlamaStackAsLibraryClient("ollama")
-client.initialize()
+# from llama_stack import LlamaStackAsLibraryClient
+# client = LlamaStackAsLibraryClient("ollama")
+# client.initialize()
 
 
 client.toolgroups.register(

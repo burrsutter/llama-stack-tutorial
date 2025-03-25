@@ -16,11 +16,11 @@ logger = logging.getLogger(__name__)
 
 LLAMA_STACK_SERVER=os.getenv("LLAMA_STACK_SERVER")
 
-# from llama_stack_client import LlamaStackClient
-# client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
-from llama_stack import LlamaStackAsLibraryClient
-client = LlamaStackAsLibraryClient("ollama")
-client.initialize()
+from llama_stack_client import LlamaStackClient
+client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
+# from llama_stack import LlamaStackAsLibraryClient
+# client = LlamaStackAsLibraryClient("ollama")
+# client.initialize()
 
 
 # Make sure to `ollama run llama3.1:8b-instruct-fp16 --keepalive 60m`

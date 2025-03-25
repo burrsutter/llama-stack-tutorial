@@ -258,6 +258,35 @@ python 4-tools-weather.py
 python 5-base-agent.py
 ```
 
+### Agents with Tools
+
+Stop the docker run
+
+Get an API KEY
+
+https://app.tavily.com/home
+
+```
+export TAVILY_SEARCH_API_KEY=your-key
+```
+
+```
+docker run -it \
+  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
+  -v ~/.llama:/root/.llama \
+  llamastack/distribution-ollama \
+  --port $LLAMA_STACK_PORT \
+  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
+  --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
+  --env OLLAMA_URL=http://host.docker.internal:11434
+```
+
+Add meta-llama/Llama-3.1-8B-Instruct
+
+```
+python 1-models-add.py
+```
+
 ```
 python 5-basic-agent-websearch-tool.py
 ```
