@@ -1,0 +1,14 @@
+[project]
+name = "python-mcp-server-math"
+version = "0.1.0"
+description = "A simple Model Context Protocol (MCP) server implemented in Python using FastMCP"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.4.1",
+]
+
+[project.urls]
+Repository = "https://github.com/modelcontextprotocol/fastmcp"
+Documentation = "https://github.com/modelcontextprotocol/fastmcp"
