@@ -1,6 +1,5 @@
 import os
 import sys
-# from llama_stack_client import LlamaStackClient
 from llama_stack import LlamaStackAsLibraryClient
 
 client = LlamaStackAsLibraryClient("ollama")

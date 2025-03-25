@@ -360,14 +360,81 @@ See the registered shields
 python list-shields.py
 ```
 
-## ToDos
+### MCP Servers
 
-MCP Servers
+The file system MCP server is one of the easiest, git it up and running in a terminal.
+
+
+```
+cd python-server
+```
+
+```
+python3.11 -m venv venv
+source venv/bin/activate
+```
+
+```
+pip install mcp
+```
+
+
+```
+python mcp_server_sse_tools.py
+```
+
+
+```
+python 7-mcp-python-server.py
+```
+
+
+## Library Mode
+
+Using Llama Stack as an embedded library/framework instead of a remote API server.
+
+Still using ollama 
+
+https://llama-stack.readthedocs.io/en/latest/distributions/importing_as_library.html
+
+```
+python3.11 -m venv venv
+```
+
+```
+source venv/bin/activate
+```
+
+```
+pip install llama-stack
+pip install aiosqlite
+pip install ollama
+pip install openai
+pip install datasets
+pip install opentelemetry-instrumentation
+pip install opentelemetry-exporter-prometheus
+pip install opentelemetry-exporter-otlp
+pip install faiss-cpu
+pip install mcp
+pip install autoevals
+pip install bwrap
+```
+
+```
+python 0-test-library-client.py
+```
+
+
+
+## ToDos
 
 https://llama-stack.readthedocs.io/en/latest/building_applications/rag.html
 versus
 https://github.com/burrsutter/python-plain-agentic-examples/tree/main/rag
 
+Working Tavily+Agent
+
+Working Brave+Agent
 
 ## Clean Docker
 
