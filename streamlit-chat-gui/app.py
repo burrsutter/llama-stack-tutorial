@@ -46,10 +46,10 @@ if prompt:
         },
         toolgroups=(
             [
-                # "mcp::my-python-server-math"
-                # "mcp::my-node-server-math",
-                # "mcp::my-node-server-other"
-                "mcp::mcp-website-fetcher"
+                # "mcp::my-python-server-math",
+                "mcp::my-node-server-math",
+                "mcp::my-node-server-other",
+                # "mcp::mcp-website-fetcher"
             ]
         ),
         tool_choice="auto",
