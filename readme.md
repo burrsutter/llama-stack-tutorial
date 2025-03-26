@@ -392,6 +392,13 @@ See the registered shields
 python list-shields.py
 ```
 
+Now an agent + shield
+
+```
+python 6-agent-shield.py
+```
+
+
 ### MCP Servers
 
 The file system MCP server is one of the easiest, git it up and running in a terminal.
@@ -510,34 +517,7 @@ Check out the README.md in that director for more ideass
 
 ## ToDos
 
-Shields input and output
-
-agent_config = AgentConfig(
-    model=model_id,
-    instructions="You are a helpful assistant",
-    toolgroups=["mcp::blah"],
-    input_shields=[],
-    output_shields=[],
-    enable_session_persistence=False,
-)
-
-    available_shields = [shield.identifier for shield in llama_stack_client_with_mocked_inference.shields.list()]
-    available_shields = available_shields[:1]
-    agent_config = dict(
-        model=text_model_id,
-        instructions="You are a helpful assistant",
-        sampling_params={
-            "strategy": {
-                "type": "top_p",
-                "temperature": 0.0001,
-                "top_p": 0.9,
-            },
-        },
-        tools=[],
-        input_shields=available_shields,
-        output_shields=available_shields,
-        enable_session_persistence=False,
-    )
+Shields output
 
 https://github.com/meta-llama/llama-stack/pull/1419
 
@@ -557,6 +537,7 @@ Playground
 https://llama-stack.readthedocs.io/en/latest/playground/index.html
 /Users/burr/my-projects/llama-stack/llama_stack/distribution/ui
 
+agent steps
    response = agent.create_turn(
         messages=[
             {
