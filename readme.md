@@ -352,9 +352,12 @@ docker stop fc3eae32f44c
 ```
 
 Not sure if the following is needed?
+
 ```
 export SAFETY_MODEL="meta-llama/Llama-Guard-3-8B"
 ```
+
+but starting/restarting clean is often a good idea
 
 ```
 rm -rf ~/.llama
@@ -483,9 +486,61 @@ pip install bwrap
 python 0-test-library-client.py
 ```
 
+## Playground
+
+
+```
+export LLAMA_STACK_ENDPOINT=http://localhost:8321
+```
+
+```
+git clone https://github.com/meta-llama/llama-stack
+
+cd llama-stack/llama_stack/distribution/ui
+
+pip install -r requirements.txt
+
+pip install llama_stack
+
+streamlit run app.py
+```
+
+Check out the README.md in that director for more ideass
 
 
 ## ToDos
+
+Shields input and output
+
+agent_config = AgentConfig(
+    model=model_id,
+    instructions="You are a helpful assistant",
+    toolgroups=["mcp::blah"],
+    input_shields=[],
+    output_shields=[],
+    enable_session_persistence=False,
+)
+
+    available_shields = [shield.identifier for shield in llama_stack_client_with_mocked_inference.shields.list()]
+    available_shields = available_shields[:1]
+    agent_config = dict(
+        model=text_model_id,
+        instructions="You are a helpful assistant",
+        sampling_params={
+            "strategy": {
+                "type": "top_p",
+                "temperature": 0.0001,
+                "top_p": 0.9,
+            },
+        },
+        tools=[],
+        input_shields=available_shields,
+        output_shields=available_shields,
+        enable_session_persistence=False,
+    )
+
+https://github.com/meta-llama/llama-stack/pull/1419
+
 
 https://llama-stack.readthedocs.io/en/latest/building_applications/rag.html
 versus
@@ -494,6 +549,34 @@ https://github.com/burrsutter/python-plain-agentic-examples/tree/main/rag
 Working Tavily+Agent
 
 Working Brave+Agent
+
+PatternFly Chatbot
+https://github.com/patternfly/chatbot
+
+Playground
+https://llama-stack.readthedocs.io/en/latest/playground/index.html
+/Users/burr/my-projects/llama-stack/llama_stack/distribution/ui
+
+   response = agent.create_turn(
+        messages=[
+            {
+                "role": "user",
+                "content": "Call get_boiling_point twice to answer: What is the boiling point of polyjuice in both celsius and fahrenheit?",
+            },
+        ],
+        session_id=session_id,
+        stream=False,
+    )
+    steps = response.steps
+    assert len(steps) == 7
+    assert steps[0].step_type == "shield_call"
+    assert steps[1].step_type == "inference"
+    assert steps[2].step_type == "shield_call"
+    assert steps[3].step_type == "tool_execution"
+    assert steps[4].step_type == "shield_call"
+    assert steps[5].step_type == "inference"
+    assert steps[6].step_type == "shield_call"
+
 
 ## Clean Docker
 
