@@ -31,8 +31,8 @@ client = LlamaStackClient(
 
 
 # Streamlit UI
-st.title("Llama-stack MCP server demo")
-st.markdown("Query an orders system using MCP and Llama-stack")
+st.title("Llama Stack, MCP, Shields demo")
+st.markdown("Interact with MCP, shields and Llama Stack")
 # enquiry = st.sidebar.text_area("Ask a question", "Addition")
 # Chat history management if not initialized
 if "messages" not in st.session_state:
