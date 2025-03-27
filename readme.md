@@ -678,6 +678,10 @@ Working Brave+Agent
 PatternFly Chatbot
 https://github.com/patternfly/chatbot
 
+More MCP examples
+https://towardsdatascience.com/clear-intro-to-mcp/
+
+https://github.com/meta-llama/llama-stack/tree/main/docs/zero_to_hero_guide
 
 
 ## Clean Docker

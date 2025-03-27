@@ -9,11 +9,20 @@ import logging
 
 load_dotenv()
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger(__name__)
+
+
 LLAMA_STACK_SERVER=os.getenv("LLAMA_STACK_SERVER")
 LLAMA_STACK_MODEL=os.getenv("LLAMA_STACK_MODEL")
 
-print(LLAMA_STACK_SERVER)
-print(LLAMA_STACK_MODEL)
+logger.info(LLAMA_STACK_SERVER)
+logger.info(LLAMA_STACK_MODEL)
 
 from llama_stack_client import LlamaStackClient
 client = LlamaStackClient(
@@ -44,16 +53,17 @@ if prompt:
         sampling_params={
             "strategy": {"type": "top_p", "temperature": 1.0, "top_p": 0.9},
         },
-        toolgroups=(
-            [
-                # "mcp::my-python-server-math",
-                "mcp::my-node-server-math",
-                "mcp::my-node-server-other",
-                # "mcp::mcp-website-fetcher"
-            ]
-        ),
-        tool_choice="auto",
-        input_shields=[],
+        toolgroups=[],
+        # toolgroups=(
+        #     [
+        #         # "mcp::my-python-server-math",
+        #         "mcp::my-node-server-math",
+        #         "mcp::my-node-server-other",
+        #         # "mcp::mcp-website-fetcher"
+        #     ]
+        # ),
+        # tool_choice="auto",
+        input_shields=["content_safety"],
         output_shields=[],
         enable_session_persistence=True,
     )
@@ -67,6 +77,7 @@ if prompt:
     # Get response from LlamaStack API
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
+        logger.info("HERE")
         response = agent.create_turn(
             messages=[
                 {
@@ -76,13 +87,23 @@ if prompt:
             ],
             session_id=session_id,
         )
-     
+        logger.info(f"\nResponse: {response} ")
+
         for chunk in response:
-            print(chunk)
+            logger.info(f"chunk: {chunk}\n")
             if chunk.event.payload.event_type == "step_progress":
                 if chunk.event.payload.delta.type == "text":
                     full_response += chunk.event.payload.delta.text
                     message_placeholder.markdown(full_response + "▌")
+            
+            if chunk.event.payload.event_type == "step_complete":
+                if chunk.event.payload.step_details:
+                    step_details = chunk.event.payload.step_details
+                    if hasattr(step_details, "violation") and step_details.violation:
+                        violation = step_details.violation
+                        logger.info(f"violation: {violation}")
+                        full_response = violation.metadata.get("violation_type", "") + " " + violation.user_message
+
             message_placeholder.markdown(full_response)
     
         st.session_state.messages.append({"role": "assistant", "content": full_response})
