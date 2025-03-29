@@ -591,6 +591,58 @@ curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "mode
 python 7-mcp-client-web-page-fetcher.py
 ```
 
+## Vision
+
+VLM use cases - image to text:
+- how many objects in an image
+- what is the total amount on an invoice
+- hand-writing recognition
+- generating marketing copy for a new product
+
+```
+ollama run llama3.2-vision:11b --keepalive 60m
+```
+Uses about 12GB of VRAM (or unified RAM Mac M1,3,4)
+
+```
+model = client.models.register(    
+    model_id="meta-llama/Llama-3.2-vision-11B",
+    model_type="llm",
+    provider_id="ollama",
+    provider_model_id="llama3.2-vision:11b",
+    metadata={"description": "llama3.2-vision:11b via ollama"}
+)
+```
+
+### Describe an image
+
+```
+python 8-chat-completions-vision-1.py
+```
+
+### How many dogs
+
+```
+python 8-chat-completions-vision-2.py
+```
+
+### Invoice Total and customer address
+
+```
+python 8-chat-completions-vision-3.py
+```
+
+### Patient Intake: Hand-writing
+
+```
+python 8-chat-completions-vision-4.py
+```
+
+### Marketing copy creation
+
+```
+python 8-chat-completions-vision-5.py
+```
 
 
 ## Library Mode
@@ -663,6 +715,15 @@ Check out the README.md in that directory for more ideass
 
 ## ToDos
 
+podman 
+If I run llama-stack in podman, I use this as the address of my mcp-server:  http://host.containers.internal:8000/sse
+
+get weather via agent API and decorator 7
+
+MCP server with sqlite database
+
+https://github.com/meta-llama/llama-stack/tree/main/docs/zero_to_hero_guide
+
 Shields output
 
 https://github.com/meta-llama/llama-stack/pull/1419
@@ -681,8 +742,10 @@ https://github.com/patternfly/chatbot
 More MCP examples
 https://towardsdatascience.com/clear-intro-to-mcp/
 
-https://github.com/meta-llama/llama-stack/tree/main/docs/zero_to_hero_guide
 
+https://redhat-internal.slack.com/archives/C08CD63RDLG/p1743181170314839
+
+https://github.com/meta-llama/llama-stack/pull/1354
 
 ## Clean Docker
 

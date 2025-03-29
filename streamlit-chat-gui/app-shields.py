@@ -52,16 +52,9 @@ if prompt:
         instructions="You are a helpful assistant",
         sampling_params={
             "strategy": {"type": "top_p", "temperature": 1.0, "top_p": 0.9},
-        },        
-        toolgroups=(
-            [
-                # "mcp::my-python-server-math",
-                "mcp::my-node-server-math",
-                "mcp::my-node-server-other",
-                # "mcp::mcp-website-fetcher"
-            ]
-        ),
-        tool_choice="auto",
+        },
+        toolgroups=[],
+        input_shields=["content_safety"],
         output_shields=[],
         enable_session_persistence=True,
     )

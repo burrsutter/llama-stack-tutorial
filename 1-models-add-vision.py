@@ -31,10 +31,10 @@ client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
 # See the streamlit-chat-gui folder 
 
 # Register a model
-model = client.models.register(
-    model_id="meta-llama/Llama-Guard-3-8B",
+model = client.models.register(    
+    model_id="meta-llama/Llama-3.2-vision-11B",
     model_type="llm",
     provider_id="ollama",
-    provider_model_id="llama-guard3:8b-q4_0",
-    metadata={"description": "llama-guard3:8b-q4_0 via ollama"}
+    provider_model_id="llama3.2-vision:11b",
+    metadata={"description": "llama3.2-vision:11b via ollama"}
 )
