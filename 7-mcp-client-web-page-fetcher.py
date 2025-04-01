@@ -52,7 +52,7 @@ response = agent.create_turn(
     messages=[
         {
             "role": "user",
-            # "content": "example.com",
+            "content": "example.com",
             # "content": "info.cern.ch",
             # "content": "iana.org/domains/reserved",
             # "content": "neverssl.com",

@@ -42,6 +42,7 @@ Reset data
 ```
 rm -rf ~/.llama
 mkdir -p ~/.llama
+ls ~/.llama
 ```
 
 **Terminal 3**
@@ -233,7 +234,8 @@ We will add the Guard model later for shields/safety
 
 ### Delete a model
 
-Does not work as of March 23 and you will need 8B model later
+Does not work as of April 1 (or there is something wrong in the code)
+and you will need 8B model later
 
 ```
 python 1-models-delete.py
@@ -281,7 +283,7 @@ Structured output means you can get formatted responses from the LLM that allow 
 
 ### Tools
 
-Using tools, JSON declaration
+Using tools, JSON declaration - this style of tool calling no longer works with Llama. 
 
 ```
 python 4-tools-weather.py
@@ -289,16 +291,29 @@ python 4-tools-weather.py
 
 It should provide the correct temperature for US cities at least.
 
+
+The following requires the Llama Stack server be restarted with
+
+```
+docker run -it \
+  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
+  -v ~/.llama:/root/.llama \
+  llamastack/distribution-ollama \
+  --port $LLAMA_STACK_PORT \
+  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
+  --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
+  --env OLLAMA_URL=http://host.docker.internal:11434
+
+```
+
+
 ```
 python 4-tools-tavily.py
 ```
+
+
 proves you have connectivity to tavily
 
-```
-python 4-tools-brave.py
-```
-
-proves you have connectvity to brave.  Fails normally and I am not sure how to fix it at this time.
 
 ```
 python list-tools.py
@@ -351,7 +366,7 @@ meta-llama/Llama-3.2-3B-Instruct - ollama - llama3.2:3b-instruct-fp16
 meta-llama/Llama-Guard-3-8B - ollama - llama-guard3:8b-q4_0
 ```
 
-Note: you do not need both 38 and 8B normally. 
+Note: you do not need both 3B and 8B normally. 
 
 ```
 python 5-basic-agent-websearch-tool.py
@@ -435,7 +450,7 @@ llama3.1:8b-instruct-fp16    4aacac419454    17 GB     100% GPU     59 minutes f
 
 If the model is not alive on ollama, you will get failures.  Llama Stack server startup looks for the already running ollama models.  
 
-Shut-down any previously running Llama Stack server
+You MAY need to shut-down any previously running Llama Stack server
 
 ```
 docker ps
@@ -445,12 +460,6 @@ note: your container id will be different
 
 ```
 docker stop fc3eae32f44c
-```
-
-Not sure if the following is needed?
-
-```
-export SAFETY_MODEL="meta-llama/Llama-Guard-3-8B"
 ```
 
 but starting/restarting clean is often a good idea
@@ -518,7 +527,12 @@ New terminal to run the MCP server process
 cd mcp-servers/node-mcp-server-math
 ```
 
-See its readme.md for how to start it up
+See its readme.md
+
+```
+npx -y supergateway --port 8002 --stdio "node index.mjs"
+```
+
 
 Register the toolgroup
 
@@ -527,6 +541,13 @@ Note: if the MCP server is not up/on, the registration will often fail with a 50
 ```
 curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::my-node-server-math", "mcp_endpoint" : { "uri" : "http://host.docker.internal:8002/sse"}}' http://localhost:8321/v1/toolgroups
 ```
+
+See if it is registered
+
+```
+python providers-tools-list.py
+```
+
 
 ```
 python 7-mcp-client-node-server.py

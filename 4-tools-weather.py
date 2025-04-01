@@ -1,5 +1,6 @@
 import os
 from llama_stack_client import LlamaStackClient
+from llama_stack.apis.inference import ToolConfig, ToolPromptFormat
 from llama_stack_client.types import CompletionMessage
 import requests
 import json
@@ -59,11 +60,13 @@ tool = [
         "parameters": {            
             "latitude": {
                 "param_type": "float",
-                "description": "latitude of city"
+                "description": "latitude of city",
+                "required" : True
             },
             "longitude": {
                 "param_type": "float",
-                "description": "longitude of city"
+                "description": "longitude of city",
+                "required" : True
             }
         }
     }
@@ -82,12 +85,17 @@ messages = [
     {"role": "user", "content": "What is the temperature in Atlanta today?"},
 ]
 
+tool_config = ToolConfig(
+    tool_prompt_format=ToolPromptFormat.json,
+    tool_choice="auto",
+    )
+
 response = client.inference.chat_completion(
     model_id=LLAMA_STACK_MODEL,
     messages=messages,
     tools=tool,
-    tool_prompt_format="json",
-    tool_choice="auto"
+    tool_config=tool_config,
+    
 )
 
 # --------------------------------------------------------------
