@@ -638,6 +638,12 @@ model = client.models.register(
 ### Describe an image
 
 ```
+export LLAMA_STACK_VISION_MODEL="meta-llama/Llama-3.2-vision-11B"
+# OR
+export LLAMA_STACK_VISION_MODEL="ibm/Granite-3.2-vision-2B"
+```
+
+```
 python 8-chat-completions-vision-1.py
 ```
 

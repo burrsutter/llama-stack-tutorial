@@ -23,13 +23,13 @@ client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
 # client = LlamaStackAsLibraryClient("ollama")
 # client.initialize()
 
-# Make sure to `ollama run llama3.1:8b-instruct-fp16 --keepalive 60m`
+# Make sure to `ollama run granite3.2-vision:2b-fp16 --keepalive 60m`
 
 # Register a model
 model = client.models.register(    
-    model_id="meta-llama/Llama-3.2-vision-11B",
+    model_id="ibm/Granite-3.2-vision-2B",
     model_type="llm",
     provider_id="ollama",
-    provider_model_id="llama3.2-vision:11b",
-    metadata={"description": "llama3.2-vision:11b via ollama"}
+    provider_model_id="granite3.2-vision:2b-fp16",
+    metadata={"description": "granite3.2-vision:2b-fp16 via ollama"}
 )
