@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 LLAMA_STACK_SERVER=os.getenv("LLAMA_STACK_SERVER")
 LLAMA_STACK_VISION_MODEL=os.getenv("LLAMA_STACK_VISION_MODEL")
 
-IMAGE_TO_ANALYZE="images/patient-intake-1.jpg"
+IMAGE_TO_ANALYZE="images/patient-intake-2.jpg"
 
 logger.info(LLAMA_STACK_SERVER)
 logger.info(LLAMA_STACK_VISION_MODEL)
