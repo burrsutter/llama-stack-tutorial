@@ -23,7 +23,7 @@ client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
 # client = LlamaStackAsLibraryClient("ollama")
 # client.initialize()
 
-# Make sure to `ollama run llama3.1:8b-instruct-fp16 --keepalive 60m`
+# Make sure to `ollama run llama3.2-vision:11b --keepalive 60m`
 
 # Register a model
 model = client.models.register(    
