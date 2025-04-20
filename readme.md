@@ -16,6 +16,8 @@ ollama serve
 
 Llama Stack does not dynamically load models even though that is a feature of ollama.  Use the "keepalive" technique otherwise ollama quickly returns that memory back to the host
 
+As of 0.2.2, the --keepalive is no longer required.  However, you do need to `ollama pull` 
+
 ```
 ollama run llama3.2:3b-instruct-fp16 --keepalive 60m
 ```
@@ -200,6 +202,8 @@ python 1-models.py
 
 Make sure ollama has the model running
 
+As of 0.2.2, the --keepalive is no longer required.  However, you do need to `ollama pull` 
+
 ```
 ollama run llama3.1:8b-instruct-fp16 --keepalive 60m
 ```
@@ -234,7 +238,7 @@ We will add the Guard model later for shields/safety
 
 ### Delete a model
 
-Does not work as of April 1 (or there is something wrong in the code)
+Does not work as of April 20 (or there is something wrong in the code)
 and you will need 8B model later
 
 ```
@@ -261,10 +265,22 @@ Because "what's the weather?" is the way you show off tools and MCP later on
 python 2-chat-completions-logger.py
 ```
 
-Use of dotenv and logger. A bit more advanced, sprinked throughout some of the following examples.  Also shows off a hallunication
+Use of dotenv and logger. A bit more advanced, sprinkled throughout some of the following examples.  Also shows off a hallunication
 
 ```
 Burr Sutter is an American entrepreneur and the co-founder of GitHub, a web-based platform for version control and collaboration on software development projects. He co-founded GitHub in 2008 with Tom Preston-Werner and Chris Wanstrath.
+```
+
+### OpenAI API compatibility
+
+```
+export API_KEY=none
+export MODEL_NAME=$INFERENCE_MODEL
+export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
+```
+
+```
+python 2-chat-completions-weather-openai.py
 ```
 
 ### Structured Output
@@ -290,6 +306,18 @@ python 4-tools-weather.py
 ```
 
 It should provide the correct temperature for US cities at least.
+
+Another attempt
+
+```
+export API_KEY=none
+export MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
+export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
+```
+
+```
+python 4-tools-weather-openai.py
+```
 
 
 The following requires the Llama Stack server be restarted with
