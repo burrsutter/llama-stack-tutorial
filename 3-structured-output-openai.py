@@ -56,8 +56,31 @@ raw_response = client.chat.completions.create(
         },
     ],
     temperature=0.0, 
-    response_format={ "type": "json_schema", "json_schema": {"name": "AnalyzedEmail", "schema": schema_dict}, "strict": "true" }
+    response_format={ 
+        "type": "json_schema", 
+        "json_schema": {
+            "name": "AnalyzedEmail", 
+            "schema": schema_dict
+            }, 
+        "strict": "true" }
 )
+
+# raw_response = client.chat.completions.create(
+#     model=MODEL_NAME,
+#     messages=[
+#         {"role": "system", "content": sys_prompt},
+#         {
+#             "role": "user",  
+#             "content": user_message,
+#         },
+#     ],
+#     temperature=0.0, 
+#     response_format={
+#         "type": "json_schema",
+#         "json_schema": schema_json,
+#         "strict": "true"
+#     }
+# )
 
 print("Raw response content:")
 content = raw_response.choices[0].message.content
