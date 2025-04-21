@@ -27,8 +27,8 @@ class AnalyzedEmail(BaseModel):
     product_name: str
     escalate: bool
 
-schema_dict = AnalyzedEmail.model_json_schema()
-schema_json = json.dumps(schema_dict, indent=2)
+# schema_dict = AnalyzedEmail.model_json_schema()
+# schema_json = json.dumps(schema_dict, indent=2)
 
 
 sys_prompt="Extract the support email information. "
