@@ -56,7 +56,7 @@ raw_response = client.chat.completions.create(
         },
     ],
     temperature=0.0, 
-    response_format={ "type": "json_schema", "schema": schema_json, "strict": "true" }
+    response_format={ "type": "json_schema", "json_schema": {"name": "AnalyzedEmail", "schema": schema_dict}, "strict": "true" }
 )
 
 print("Raw response content:")
