@@ -30,38 +30,40 @@ class AnalyzedEmail(BaseModel):
 schema_dict = AnalyzedEmail.model_json_schema()
 schema_json = json.dumps(schema_dict, indent=2)
 
+# sys_prompt=f"""
+# Extract the support email information. Please output ONLY a JSON object (no extra text)
+# that exactly matches this JSON Schema:
+
+# {schema_json}
+
+# """ 
+
 sys_prompt=f"""
-Extract the support email information. Please output ONLY a JSON object (no extra text)
-that exactly matches this JSON Schema:
-
-{schema_json}
-
+Extract the support email information. 
 """ 
 
+user_message = "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@example.org"
+# user_message = "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@example.org"
+# user_message = "I purchased a TechGear Pro Laptop from you and the damn thing won't boot up, my project deadline is near. David david@example.org"
 
 raw_response = client.chat.completions.create(
     model=MODEL_NAME,
     messages=[
         {"role": "system", "content": sys_prompt},
         {
-            "role": "user",
-            # "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@example.org",
-            "content": "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@example.org",
-            "content": "I purchased a TechGear Pro Laptop from you and the damn thing won't boot up, my project deadline is near. David david@example.org",
+            "role": "user",  
+            "content": user_message,
         },
     ],
-    temperature=0.0    
+    temperature=0.0, 
+    response_format={ "type": "json_schema", "schema": schema_json, "strict": "true" }
 )
 
-# Print detailed information about the response
-print("Response type:", type(raw_response))
-print("Response attributes:", dir(raw_response))
-print("Choices:", raw_response.choices)
 print("Raw response content:")
 content = raw_response.choices[0].message.content
 print(content)
-print("Content type:", type(content))
-print("Content length:", len(content))
+# print("Content type:", type(content))
+# print("Content length:", len(content))
 print("-----------------")
 
 # Parse and validate the JSON response
