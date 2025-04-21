@@ -30,17 +30,16 @@ class AnalyzedEmail(BaseModel):
 schema_dict = AnalyzedEmail.model_json_schema()
 schema_json = json.dumps(schema_dict, indent=2)
 
-# sys_prompt=f"""
-# Extract the support email information. Please output ONLY a JSON object (no extra text)
-# that exactly matches this JSON Schema:
-
-# {schema_json}
-
-# """ 
-
 sys_prompt=f"""
-Extract the support email information. 
+Extract the support email information. Please output ONLY a JSON object (no extra text)
+that exactly matches this JSON Schema:
+
+{schema_json}
+
 """ 
+
+# sys_prompt="Extract the support email information. "
+
 
 user_message = "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email. Sincerely, David Jones david@example.org"
 # user_message = "Hello, I purchased a TechGear Pro Laptop, but I can't find the invoice in my email and I need it immediately for tax purposes. Sincerely, David Jones david@example.org"
@@ -56,13 +55,6 @@ raw_response = client.chat.completions.create(
         },
     ],
     temperature=0.0, 
-    response_format={ 
-        "type": "json_schema", 
-        "json_schema": {
-            "name": "AnalyzedEmail", 
-            "schema": schema_dict
-            }, 
-        "strict": "true" }
 )
 
 # raw_response = client.chat.completions.create(
@@ -75,11 +67,7 @@ raw_response = client.chat.completions.create(
 #         },
 #     ],
 #     temperature=0.0, 
-#     response_format={
-#         "type": "json_schema",
-#         "json_schema": schema_json,
-#         "strict": "true"
-#     }
+#     response_format={"type": "json_schema", "json_schema": {"name": "AnalyzedEmail", "schema": schema_dict}, "strict": True},
 # )
 
 print("Raw response content:")
