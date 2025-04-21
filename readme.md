@@ -275,7 +275,7 @@ Burr Sutter is an American entrepreneur and the co-founder of GitHub, a web-base
 
 ```
 export API_KEY=none
-export MODEL_NAME=$INFERENCE_MODEL
+export MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
 export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
 ```
 
