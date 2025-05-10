@@ -31,7 +31,7 @@ def encode_image(image_path):
         base64_string = base64.b64encode(image_file.read()).decode("utf-8")        
         return base64_string
 
-client = LlamaStackClient(base_url=os.getenv("LLAMA_STACK_SERVER"))
+client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
 
 response = client.inference.chat_completion(
     model_id=LLAMA_STACK_VISION_MODEL,

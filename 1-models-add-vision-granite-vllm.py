@@ -29,7 +29,6 @@ client = LlamaStackClient(base_url=LLAMA_STACK_SERVER)
 model = client.models.register(    
     model_id="ibm-granite/granite-vision-3.2-2b",
     model_type="llm",
-    provider_id="ollama",
-    provider_model_id="granite3.2-vision:2b-fp16",
-    metadata={"description": "granite3.2-vision:2b-fp16 via ollama"}
+    provider_id="granite-vision-3.2-2b",
+    provider_model_id="ibm-granite/granite-vision-3.2-2b"
 )

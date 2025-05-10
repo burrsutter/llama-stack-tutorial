@@ -39,6 +39,10 @@ export LLAMA_STACK_PORT=8321
 export LLAMA_STACK_SERVER=http://localhost:$LLAMA_STACK_PORT
 ```
 
+```
+export LLAMA_STACK_ENDPOINT=$LLAMA_STACK_SERVER
+```
+
 Reset data
 
 ```
@@ -49,7 +53,7 @@ ls ~/.llama
 
 **Terminal 3**
 
-```
+```bash
 docker run -it \
   -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
   -v ~/.llama:/root/.llama \
@@ -57,6 +61,19 @@ docker run -it \
   --port $LLAMA_STACK_PORT \
   --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
   --env OLLAMA_URL=http://host.docker.internal:11434
+```
+
+or 
+
+
+```bash
+podman run -it \
+  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
+  -v ~/.llama:/root/.llama \
+  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
+  --env OLLAMA_URL=http://host.containers.internal:11434 \
+  llamastack/distribution-ollama \
+  --port $LLAMA_STACK_PORT
 ```
 
 
@@ -702,6 +719,11 @@ python 8-chat-completions-vision-4.py
 ```
 python 8-chat-completions-vision-5.py
 ```
+
+### Qwen2.5-VL-7B-Instruct
+
+https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct
+
 
 
 ## Library Mode

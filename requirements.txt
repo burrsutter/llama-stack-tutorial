@@ -11,3 +11,5 @@ faiss-cpu
 mcp
 autoevals
 bwrap
+PyPDF2>=3.0.0
+pdf2image==1.17.0
