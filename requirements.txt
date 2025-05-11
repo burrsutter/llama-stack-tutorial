@@ -10,6 +10,8 @@ opentelemetry-exporter-otlp
 faiss-cpu
 mcp
 autoevals
+dotenv
+pydantic
 bwrap
 PyPDF2>=3.0.0
 pdf2image==1.17.0

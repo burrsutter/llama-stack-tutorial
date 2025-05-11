@@ -22,7 +22,7 @@ TAVILY_SEARCH_API_KEY=os.getenv("TAVILY_SEARCH_API_KEY")
 print(LLAMA_STACK_SERVER)
 print(LLAMA_STACK_MODEL)
 
-search_query="Who won the last Super Bowl?"
+search_query="Who won the 2025 Super Bowl?"
 
 client = LlamaStackClient(
     base_url=os.getenv("LLAMA_STACK_SERVER"),

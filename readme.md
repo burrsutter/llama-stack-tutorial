@@ -32,18 +32,17 @@ ollama ps
 
 **Terminal 3**
 
+There is some repetition below as I find different examples that would like slightly different env vars
+
 ```
 export LLAMA_STACK_MODEL="meta-llama/Llama-3.2-3B-Instruct"
 export INFERENCE_MODEL="meta-llama/Llama-3.2-3B-Instruct"
 export LLAMA_STACK_PORT=8321
 export LLAMA_STACK_SERVER=http://localhost:$LLAMA_STACK_PORT
-```
-
-```
 export LLAMA_STACK_ENDPOINT=$LLAMA_STACK_SERVER
 ```
 
-Reset data
+Reset local data used by Llama Stack Server
 
 ```
 rm -rf ~/.llama
@@ -81,15 +80,19 @@ podman run -it \
 
 **Terminal 4**
 ```
-python3.11 -m venv venv
-source venv/bin/activate
+python3.11 -m venv .venv
+source .venv/bin/activate
 pip install --upgrade pip
 ```
 
 
+Check out requirements.txt and install the dependencies
+
 ```
-pip install llama-stack-client
+pip install -r requirements.txt
 ```
+
+Note: requirements.txt dependencies are NOT versioned in most cases.  Trying to stay on latest/greatest.
 
 ```
 llama-stack-client configure --endpoint $LLAMA_STACK_SERVER
@@ -177,11 +180,6 @@ curl -sS $LLAMA_STACK_SERVER/v1/inference/chat-completion \
 
 ## Python
 
-Check out requirements.txt and install the deps if needed
-
-```
-pip install -r requirements.txt
-```
 
 To prove connectivity and find out more about the capabilities of the server
 
@@ -201,6 +199,14 @@ Here is a haiku about coding:
 Lines of code unfold
 Logic flows through digital night
 Beauty in the bits
+```
+
+Test OpenAI API compatibility 
+
+Note: "v1/openai/v1" appended to the Llama Stack server host/port
+
+```
+python 0-test-remote-client-openai.py
 ```
 
 ### List of models
@@ -292,7 +298,7 @@ Burr Sutter is an American entrepreneur and the co-founder of GitHub, a web-base
 
 ```
 export API_KEY=none
-export MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
+export MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
 export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
 ```
 
@@ -314,17 +320,15 @@ python 3-structured-output-leopard.py
 
 Structured output means you can get formatted responses from the LLM that allow for programmatic control
 
+With OpenAI API
+
+```
+python 3-structured-output-openai.py
+```
+
 ### Tools
 
-Using tools, JSON declaration - this style of tool calling no longer works with Llama. 
-
-```
-python 4-tools-weather.py
-```
-
-It should provide the correct temperature for US cities at least.
-
-Another attempt
+Using tools, JSON declaration
 
 ```
 export API_KEY=none
@@ -335,7 +339,6 @@ export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
 ```
 python 4-tools-weather-openai.py
 ```
-
 
 The following requires the Llama Stack server be restarted with
 
@@ -348,7 +351,17 @@ docker run -it \
   --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
   --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
   --env OLLAMA_URL=http://host.docker.internal:11434
+```
 
+```
+podman run -it \
+  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
+  -v ~/.llama:/root/.llama \
+  llamastack/distribution-ollama \
+  --port $LLAMA_STACK_PORT \
+  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
+  --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
+  --env OLLAMA_URL=http://host.docker.internal:11434
 ```
 
 
@@ -357,7 +370,7 @@ python 4-tools-tavily.py
 ```
 
 
-proves you have connectivity to tavily
+Proves you have connectivity to tavily
 
 
 ```
@@ -446,9 +459,9 @@ If the version you need is not yet on pypi.org, install client directly from git
 If you need to clean your previously downloaded pips:
 
 ```
-rm -rf venv
-python3.11 -m venv venv
-source venv/bin/activate
+rm -rf .venv
+python3.11 -m venv .venv
+source .venv/bin/activate
 ```
 
 ```
@@ -735,11 +748,11 @@ Still using ollama
 https://llama-stack.readthedocs.io/en/latest/distributions/importing_as_library.html
 
 ```
-python3.11 -m venv venv
+python3.11 -m venv .venv
 ```
 
 ```
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 ```

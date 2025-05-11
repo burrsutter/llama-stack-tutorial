@@ -168,5 +168,5 @@ completion_2 = client.chat.completions.create(
 
 final_response = completion_2.choices[0].message.content
 
-logger.info("Temperature: %s", final_response.temperature)
+logger.info("Temperature: %s", final_response)
 
