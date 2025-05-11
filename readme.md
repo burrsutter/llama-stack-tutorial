@@ -340,6 +340,14 @@ export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
 python 4-tools-weather-openai.py
 ```
 
+Get an API KEY
+
+https://app.tavily.com/home
+
+```
+export TAVILY_SEARCH_API_KEY=your-key
+```
+
 The following requires the Llama Stack server be restarted with
 
 ```
@@ -439,7 +447,7 @@ With Tavily Search (already pre-registered)
 
 export TAVILY_SEARCH_API_KEY=your-key
 
-And there is a `tavily-test.py` to test your key/connectivity
+And there is a `test-tavily.py` to test your key/connectivity
 
 ```
 python 5-basic-agent-tavily-tool.py

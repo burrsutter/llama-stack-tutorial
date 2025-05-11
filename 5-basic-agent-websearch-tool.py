@@ -44,7 +44,7 @@ response = agent.create_turn(
     messages=[
         {
             "role": "user",
-            "content": "Search the web and and tell me who won the last Super Bowl?",
+            "content": "Search the web and and tell me who won the 2025 Super Bowl?",
         }
     ],
     session_id=session_id,
