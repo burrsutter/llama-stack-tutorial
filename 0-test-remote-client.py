@@ -1,11 +1,18 @@
 import os
 import sys
 from llama_stack_client import LlamaStackClient
-# from llama_stack import LlamaStackAsLibraryClient
+from llama_stack_client.types import VersionInfo
 
 client = LlamaStackClient(
   base_url=f"{os.environ['LLAMA_STACK_SERVER']}"
 )
+
+# Print client version
+print(f"Client Version: {client._version}")
+
+# Print server version
+print(f"Server Version: {client.inspect.version().version}")
+
 
 print("--- Haiku ---")
 

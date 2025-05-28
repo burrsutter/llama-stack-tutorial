@@ -75,6 +75,12 @@ podman run -it \
   --port $LLAMA_STACK_PORT
 ```
 
+You may need to start your podman backend
+
+```bash
+podman machine start
+```
+
 
 ## Client library CLI
 
@@ -88,13 +94,20 @@ pip install --upgrade pip
 
 Check out requirements.txt and install the dependencies
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 Note: requirements.txt dependencies are NOT versioned in most cases.  Trying to stay on latest/greatest.
 
+```bash
+pip list | grep llama
+llama_stack                              0.2.7
+llama_stack_client                       0.2.7
+ollama                                   0.4.8
 ```
+
+```bash
 llama-stack-client configure --endpoint $LLAMA_STACK_SERVER
 ```
 
@@ -104,7 +117,7 @@ llama-stack-client configure --endpoint $LLAMA_STACK_SERVER
 
 Hit Enter
 
-```
+```bash
 llama-stack-client models list
 ```
 
@@ -849,11 +862,18 @@ https://redhat-internal.slack.com/archives/C08CD63RDLG/p1743181170314839
 
 https://github.com/meta-llama/llama-stack/pull/1354
 
-## Clean Docker
+## Clean Docker/Podman
 
 ```
 docker kill $(docker ps -q)
 docker rm $(docker ps -a -q)
 docker rmi $(docker images -q)
 docker system prune -a --volumes
+```
+
+```
+podman kill $(podman ps -q)
+podman rm $(podman ps -a -q)
+podman rmi $(podman images -q)
+podman system prune -a --volumes
 ```
