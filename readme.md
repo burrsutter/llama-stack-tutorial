@@ -1,32 +1,36 @@
 Original docs 
 
-https://llama-stack.readthedocs.io/en/latest/getting_started/index.html
+https://llama-stack.readthedocs.io/en/latest/getting_started/
 
-Note: Most of these examples use the Docker container and "client-server" approach.  There is also a library mode that is some of the examples but commented out.
+Note: Most of these examples use the "client-server" approach.  There is also a library mode that is some of the examples but commented out.
 
 ## Ollama server
 
 **Terminal 1**
 
-```
+```bash
 ollama serve
 ```
 
 **Terminal 2**
 
-Llama Stack does not dynamically load models even though that is a feature of ollama.  Use the "keepalive" technique otherwise ollama quickly returns that memory back to the host
+Use the "keepalive" parameter otherwise ollama quickly returns that memory back to the host
 
-As of 0.2.2, the --keepalive is no longer required.  However, you do need to `ollama pull` 
 
-```
+```bash
 ollama run llama3.2:3b-instruct-fp16 --keepalive 60m
 ```
 
-To check if the model is still running and in memory
+Note: this blocks the terminal as `ollama run` allows you to chat with the model.  
 
+Use 
+
+```bash
+/bye
 ```
-ollama ps
-```
+
+And then `ollama ps` to see if the model is still in memory
+
 
 ## Llama Stack Server
 
@@ -40,9 +44,12 @@ export INFERENCE_MODEL="meta-llama/Llama-3.2-3B-Instruct"
 export LLAMA_STACK_PORT=8321
 export LLAMA_STACK_SERVER=http://localhost:$LLAMA_STACK_PORT
 export LLAMA_STACK_ENDPOINT=$LLAMA_STACK_SERVER
+export LLAMA_STACK_ENDPOINT_OPENAI=$LLAMA_STACK_ENDPOINT/v1/openai/v1
 ```
 
-Reset local data used by Llama Stack Server
+Reset local data used by Llama Stack Server if using `docker` or `podman`.
+
+
 
 ```
 rm -rf ~/.llama
@@ -51,6 +58,56 @@ ls ~/.llama
 ```
 
 **Terminal 3**
+
+### uv approach
+
+start clean
+
+```bash
+uv cache clean 
+```
+
+```bash
+rm -rf .venv
+```
+
+```bash
+rm -rf /Users/bsutter/.llama/distributions/ollama/
+```
+
+```bash
+uv venv .venv --python "/opt/homebrew/bin/python3.11"
+source .venv/bin/activate
+```
+
+double check your python version
+
+```bash
+python --version
+```
+
+Check out requirements.txt and install the dependencies
+
+```bash
+uv pip install -r requirements.txt
+```
+
+Note: requirements.txt dependencies are NOT versioned in most cases.  Trying to stay on latest/greatest.
+
+```bash
+uv pip list | grep llama
+llama_stack                              0.2.12
+llama_stack_client                       0.2.12
+ollama                                   0.5.1
+```
+
+
+```bash
+uv run --with llama-stack llama stack build --template ollama --image-type venv --run
+```
+
+
+### docker, podman approach
 
 ```bash
 docker run -it \
@@ -75,6 +132,7 @@ podman run -it \
   --port $LLAMA_STACK_PORT
 ```
 
+
 You may need to start your podman backend
 
 ```bash
@@ -85,27 +143,11 @@ podman machine start
 ## Client library CLI
 
 **Terminal 4**
-```
-python3.11 -m venv .venv
+
+```bash
 source .venv/bin/activate
-pip install --upgrade pip
 ```
 
-
-Check out requirements.txt and install the dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Note: requirements.txt dependencies are NOT versioned in most cases.  Trying to stay on latest/greatest.
-
-```bash
-pip list | grep llama
-llama_stack                              0.2.7
-llama_stack_client                       0.2.7
-ollama                                   0.4.8
-```
 
 ```bash
 llama-stack-client configure --endpoint $LLAMA_STACK_SERVER
@@ -135,7 +177,7 @@ Available Models
 Total models: 2
 ```
 
-```
+```bash
 llama-stack-client \
   inference chat-completion \
   --message "hello, what model are you?"
@@ -164,11 +206,13 @@ engaging in conversation. How can I assist you today?',
 
 I use `jq` to parse the JSON returned by the curl command.  It is optional, your eyeballs can parse the JSON.
 
-```
+```bash
 brew install jq
 ```
 
-```
+Using Llama Stack API endpoint
+
+```bash
 curl -sS $LLAMA_STACK_SERVER/v1/models -H "Content-Type: application/json" | jq -r '.data[].identifier'
 ```
 
@@ -179,7 +223,15 @@ meta-llama/Llama-3.2-3B-Instruct
 all-MiniLM-L6-v2
 ```
 
+Using OpenAI API endpoint
+
+```bash
+curl -sS $LLAMA_STACK_ENDPOINT_OPENAI/models | jq -r '.data[].id'
 ```
+
+Chat completions using Llama Stack API
+
+```bash
 curl -sS $LLAMA_STACK_SERVER/v1/inference/chat-completion \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $API_KEY" \
@@ -188,6 +240,24 @@ curl -sS $LLAMA_STACK_SERVER/v1/inference/chat-completion \
      \"messages\": [{\"role\": \"user\", \"content\": \"what model are you?\"}],
      \"temperature\": 0.0
    }" | jq -r '.completion_message | select(.role == "assistant") | .content'
+```
+
+Chat completions using OpenAI API
+
+
+```bash
+API_KEY="none"
+MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
+QUESTION="What model are you?"
+
+curl -sS $LLAMA_STACK_ENDPOINT_OPENAI/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $API_KEY" \
+  -d "{
+     \"model\": \"$MODEL_NAME\",
+     \"messages\": [{\"role\": \"user\", \"content\": \"$QUESTION\"}],
+     \"temperature\": 0.0
+   }" | jq -r '.choices[0].message.content'
 ```
 
 
@@ -200,7 +270,7 @@ Code originally from  https://llama-stack.readthedocs.io/en/latest/getting_start
 
 ### Test of setup
 
-```
+```bash
 python 0-test-remote-client.py
 ```
 
@@ -218,13 +288,13 @@ Test OpenAI API compatibility
 
 Note: "v1/openai/v1" appended to the Llama Stack server host/port
 
-```
+```bash
 python 0-test-remote-client-openai.py
 ```
 
 ### List of models
 
-```
+```bash
 python 1-models.py
 ```
 
@@ -240,15 +310,15 @@ Make sure ollama has the model running
 
 As of 0.2.2, the --keepalive is no longer required.  However, you do need to `ollama pull` 
 
-```
+```bash
 ollama run llama3.1:8b-instruct-fp16 --keepalive 60m
 ```
 
-```
+```bash
 python 1-models-add.py
 ```
 
-```
+```bash
 llama-stack-client models list
 ```
 
@@ -274,20 +344,19 @@ We will add the Guard model later for shields/safety
 
 ### Delete a model
 
-Does not work as of April 20 (or there is something wrong in the code)
-and you will need 8B model later
+Note: we do use the 8b model later, this is just to exercise the API
 
-```
+```bash
 python 1-models-delete.py
 ```
 
 ### simple chat-completions example
 
-```
+```bash
 python 2-chat-completions.py
 ```
 
-```
+```bash
 python 2-chat-completions-weather.py
 ```
 
@@ -309,13 +378,13 @@ Burr Sutter is an American entrepreneur and the co-founder of GitHub, a web-base
 
 ### OpenAI API compatibility
 
-```
+```bash
 export API_KEY=none
 export MODEL_NAME="meta-llama/Llama-3.2-3B-Instruct"
 export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
 ```
 
-```
+```bash
 python 2-chat-completions-weather-openai.py
 ```
 
@@ -323,11 +392,11 @@ python 2-chat-completions-weather-openai.py
 
 Uses Pydantic model
 
-```
+```bash
 python 3-structured-output.py 
 ```
 
-```
+```bash
 python 3-structured-output-leopard.py
 ```
 
@@ -335,7 +404,7 @@ Structured output means you can get formatted responses from the LLM that allow 
 
 With OpenAI API
 
-```
+```bash
 python 3-structured-output-openai.py
 ```
 
@@ -343,13 +412,13 @@ python 3-structured-output-openai.py
 
 Using tools, JSON declaration
 
-```
+```bash
 export API_KEY=none
 export MODEL_NAME="meta-llama/Llama-3.1-8B-Instruct"
 export INFERENCE_SERVER_URL=$LLAMA_STACK_SERVER/v1/openai/v1
 ```
 
-```
+```bash
 python 4-tools-weather-openai.py
 ```
 
@@ -357,44 +426,21 @@ Get an API KEY
 
 https://app.tavily.com/home
 
-```
+```bash
 export TAVILY_SEARCH_API_KEY=your-key
 ```
 
-The following requires the Llama Stack server be restarted with
+Restart Llama Stack server 
 
-```
-docker run -it \
-  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
-  -v ~/.llama:/root/.llama \
-  llamastack/distribution-ollama \
-  --port $LLAMA_STACK_PORT \
-  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
-  --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
-  --env OLLAMA_URL=http://host.docker.internal:11434
-```
+Add meta-llama/Llama-3.1-8B-Instruct if you have not already
 
-```
-podman run -it \
-  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
-  -v ~/.llama:/root/.llama \
-  llamastack/distribution-ollama \
-  --port $LLAMA_STACK_PORT \
-  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
-  --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
-  --env OLLAMA_URL=http://host.docker.internal:11434
-```
-
-
-```
+```bash
 python 4-tools-tavily.py
 ```
 
-
 Proves you have connectivity to tavily
 
-
-```
+```bash
 python list-tools.py
 ```
 
@@ -406,48 +452,35 @@ python 5-basic-agent.py
 
 ### Agents with Tools
 
-Stop the docker run
 
 Get an API KEY
 
 https://app.tavily.com/home
 
-```
+```bash
 export TAVILY_SEARCH_API_KEY=your-key
-```
-
-```
-docker run -it \
-  -p $LLAMA_STACK_PORT:$LLAMA_STACK_PORT \
-  -v ~/.llama:/root/.llama \
-  llamastack/distribution-ollama \
-  --port $LLAMA_STACK_PORT \
-  --env INFERENCE_MODEL=$LLAMA_STACK_MODEL \
-  --env TAVILY_SEARCH_API_KEY=$TAVILY_SEARCH_API_KEY \
-  --env OLLAMA_URL=http://host.docker.internal:11434
 ```
 
 Add meta-llama/Llama-3.1-8B-Instruct if you have not already
 
-```
+```bash
 python 1-models-add.py
 ```
 
-```
+```bash
 python 1-models.py
 ```
 
-```
+```bash
 --- Available models: ---
 all-MiniLM-L6-v2 - ollama - all-minilm:latest
 meta-llama/Llama-3.1-8B-Instruct - ollama - llama3.1:8b-instruct-fp16
 meta-llama/Llama-3.2-3B-Instruct - ollama - llama3.2:3b-instruct-fp16
-meta-llama/Llama-Guard-3-8B - ollama - llama-guard3:8b-q4_0
 ```
 
 Note: you do not need both 3B and 8B normally. 
 
-```
+```bash
 python 5-basic-agent-websearch-tool.py
 ```
 
@@ -601,7 +634,7 @@ https://github.com/meta-llama/llama-stack/blob/main/llama_stack/providers/inline
 
 ### MCP Servers
 
-The file system MCP server is one of the easiest, git it up and running in a terminal.
+The file system MCP server is one of the easiest, get it up and running in a terminal.
 
 
 New terminal to run the MCP server process

@@ -3,7 +3,7 @@
 Uses `uv` and supergateway
 
 ```
-cd python-server
+cd python-mcp-server-math
 ```
 
 ```

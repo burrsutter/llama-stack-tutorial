@@ -30,8 +30,7 @@ print(BRAVE_SEARCH_API_KEY)
 client = LlamaStackClient(
     base_url=LLAMA_STACK_SERVER,
     provider_data={
-        "tavily_search_api_key" : TAVILY_SEARCH_API_KEY,
-        "brave_search_api_key" : BRAVE_SEARCH_API_KEY
+        "tavily_search_api_key" : TAVILY_SEARCH_API_KEY        
         }
 )
 

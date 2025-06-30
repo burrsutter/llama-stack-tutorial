@@ -1,0 +1,103 @@
+import requests
+from langgraph.graph import StateGraph, END
+from langchain_openai import ChatOpenAI
+from langchain.agents import tool
+from langchain_core.messages import HumanMessage, ToolMessage, AIMessage
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+INFERENCE_SERVER_OPENAI = os.getenv("LLAMA_STACK_ENDPOINT_OPENAI")
+INFERENCE_MODEL=os.getenv("INFERENCE_MODEL")
+API_KEY=os.getenv("OPENAI_API_KEY", "not applicable")
+
+
+print("INFERENCE_SERVER_OPENAI: ", INFERENCE_SERVER_OPENAI)
+print("INFERENCE_MODEL: ", INFERENCE_MODEL)
+print("API_KEY: ", API_KEY)
+
+
+# --- Weather Tool using api.weather.gov ---
+@tool
+def get_weather_by_location(lat: float, lon: float) -> str:
+    """Get the current forecast from weather.gov given a latitude and longitude."""
+    try:
+        points_url = f"https://api.weather.gov/points/{lat},{lon}"
+        points_resp = requests.get(points_url, timeout=10)
+        forecast_url = points_resp.json()["properties"]["forecast"]
+
+        forecast_resp = requests.get(forecast_url, timeout=10)
+        forecast = forecast_resp.json()["properties"]["periods"][0]["detailedForecast"]
+        return forecast
+    except Exception as e:
+        return f"Failed to get weather: {str(e)}"
+
+tools = [get_weather_by_location]
+
+# --- LLM that supports function-calling ---
+llm = ChatOpenAI(
+    model=INFERENCE_MODEL,
+    openai_api_key=API_KEY,  
+    openai_api_base=INFERENCE_SERVER_OPENAI 
+).bind_tools(tools)
+
+# --- Node that runs the agent ---
+def agent_node(state):
+    messages = state["messages"]
+    response = llm.invoke(messages)
+    return {
+        "messages": messages + [response],
+        "intermediate_step": response
+    }
+
+# --- Tool execution step ---
+def tool_node(state):
+    tool_calls = state["intermediate_step"].tool_calls
+    messages = state["messages"]
+
+    for tool_call in tool_calls:
+        tool_name = tool_call["name"]
+        args = tool_call["args"]
+
+        if tool_name == "get_weather_by_location":
+            result = get_weather_by_location.invoke(args)
+        else:
+            result = f"Unknown tool: {tool_name}"
+
+        messages.append(ToolMessage(tool_call_id=tool_call["id"], content=result))
+
+    return {"messages": messages}
+
+# --- Conditional logic to stop or continue ---
+def should_continue(state):
+    tool_calls = state.get("intermediate_step", {}).tool_calls
+    if tool_calls and len(tool_calls) > 0:
+        return "tool"
+    else:
+        return END
+
+# --- Build LangGraph ---
+builder = StateGraph(dict)
+builder.add_node("agent", agent_node)
+builder.add_node("tool", tool_node)
+builder.set_entry_point("agent")
+
+# Branch based on whether more tools need to run
+builder.add_conditional_edges("agent", should_continue)
+builder.add_edge("tool", "agent")
+
+graph = builder.compile()
+
+# --- Run the graph with a weather question ---
+initial_state = {
+    "messages": [
+        HumanMessage(content="What's the weather like in Boston?")
+    ]
+}
+
+final_state = graph.invoke(initial_state)
+
+# --- Print conversation ---
+for m in final_state["messages"]:
+    print(f"{m.type.upper()}: {m.content}")

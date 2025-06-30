@@ -32,10 +32,10 @@ client = LlamaStackClient(
 # client.initialize()
 
 # client.toolgroups.register(
-#     toolgroup_id="mcp::my-python-server",
+#     toolgroup_id="mcp::my-python-mcp-server-math",
 #     provider_id="model-context-protocol",
-#     # mcp_endpoint=URL(uri="http://localhost:8000/sse") 
-#     mcp_endpoint=URL(uri="http://host.docker.internal:8000/sse") 
+#     # mcp_endpoint=URL(uri="http://localhost:8001/sse") 
+#     mcp_endpoint=URL(uri="http://host.docker.internal:8001/sse") 
 # )
 
 agent = Agent(
@@ -43,7 +43,7 @@ agent = Agent(
     model=LLAMA_STACK_MODEL,  # or another valid model identifier
     instructions="You are a helpful assistant.",  # system prompt instructions for the agent
     enable_session_persistence=False,
-    tools=["mcp::my-python-server"]
+    tools=["mcp::my-python-mcp-server-math"]
 )
 
 session_id = agent.create_session(f"test-session-{uuid4()}")
