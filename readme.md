@@ -76,7 +76,8 @@ rm -rf /Users/bsutter/.llama/distributions/ollama/
 ```
 
 ```bash
-uv venv .venv --python "/opt/homebrew/bin/python3.11"
+brew install python@3.12
+uv venv .venv --python "/opt/homebrew/bin/python3.12"
 source .venv/bin/activate
 ```
 
@@ -96,8 +97,8 @@ Note: requirements.txt dependencies are NOT versioned in most cases.  Trying to 
 
 ```bash
 uv pip list | grep llama
-llama_stack                              0.2.12
-llama_stack_client                       0.2.12
+llama_stack                              0.2.13
+llama_stack_client                       0.2.13
 ollama                                   0.5.1
 ```
 
