@@ -28,20 +28,7 @@ llm = ChatOpenAI(
 # # Proof of connectivity
 # print(llm.invoke("Hello"))
 
-websearch_tool = {
-    "name": "web_search",
-    "description": "Search the web for a given query.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "query": {
-                "type": "string",
-                "description": "Search string to use"
-            }
-        },
-        "required": ["query"]
-    }
-}
+websearch_tool = {"type": "web_search_preview"}
 
 llm_with_tools = llm.bind_tools([websearch_tool])
 

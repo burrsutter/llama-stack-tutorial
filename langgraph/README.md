@@ -4,42 +4,6 @@
 uv pip install langgraph langchain
 ```
 
-### Hello World
-
-```python
-from langgraph.graph import StateGraph, END
-
-# Define the state (can be any dict-like structure)
-class HelloWorldState(dict):
-    pass
-
-# Define node functions
-def greet_node(state):
-    print("👋 Hello from LangGraph!")
-    return state
-
-def farewell_node(state):
-    print("👋 Goodbye from LangGraph!")
-    return state
-
-# Build the graph
-builder = StateGraph(HelloWorldState)
-
-# Add nodes
-builder.add_node("greet", greet_node)
-builder.add_node("farewell", farewell_node)
-
-# Set edges
-builder.set_entry_point("greet")
-builder.add_edge("greet", "farewell")
-builder.add_edge("farewell", END)
-
-# Compile and run the graph
-graph = builder.compile()
-graph.invoke(HelloWorldState())
-```
-
-
 ```bash
 python 1-langgraph-hello.py
 ```
@@ -50,45 +14,6 @@ python 1-langgraph-hello.py
 ```
 
 ### 3 Nodes
-
-```python
-from langgraph.graph import StateGraph, END
-
-# Define the state (can be any dict-like structure)
-class HelloWorldState(dict):
-    pass
-
-# Define node functions
-def greet_node(state):
-    print("👋 Hello from LangGraph!")
-    return state
-
-def middle_node(state):
-    print("🔄 This is the middle node.")
-    return state
-
-def farewell_node(state):
-    print("👋 Goodbye from LangGraph!")
-    return state
-
-# Build the graph
-builder = StateGraph(HelloWorldState)
-
-# Add nodes
-builder.add_node("greet", greet_node)
-builder.add_node("farewell", farewell_node)
-builder.add_node("middle", middle_node)
-
-# Set edges
-builder.set_entry_point("greet")
-builder.add_edge("greet", "middle")
-builder.add_edge("middle", "farewell")
-builder.add_edge("farewell", END)
-
-# Compile and run the graph
-graph = builder.compile()
-graph.invoke(HelloWorldState())
-```
 
 ```bash
 python 1-langgraph-3-node.py
@@ -110,7 +35,14 @@ uv pip install langgraph langchain openai langchain_openai dotenv langchain_comm
 ```bash
 export LLAMA_STACK_ENDPOINT_OPENAI=http://localhost:8321/v1/openai/v1
 export INFERENCE_MODEL=meta-llama/Llama-3.1-8B-Instruct
+```
 
+```bash
+python ../1-models-add.py
+```
+
+```bash
+curl -sS $LLAMA_STACK_ENDPOINT_OPENAI/models | jq -r '.data[].id'
 ```
 
 ```bash
@@ -126,6 +58,38 @@ python 2-agent-weather.py
 ## Built-in Tools via Llama Stack
 
 ### Web Search: Tavily
+
+Start the Llama Stack Server with the Tavily key set
+
+
+```bash
+export TAVILY_SEARCH_API_KEY=tvly-dev-stuff
+```
+
+```bash
+TAVILY_SEARCH_API_KEY=tvly-dev-stuff uv run --with llama-stack llama stack build --template ollama --image-type venv 
+```
+
+Find the run.yaml reference in the output
+
+```
+You can find the newly-built template here: /Users/bsutter/ai-projects/llama-stack-tutorial/.venv/lib/python3.12/site-packages/llama_stack/templates/ollama/run.yaml
+You can run the new Llama Stack distro via: llama stack run /Users/bsutter/ai-projects/llama-stack-tutorial/.venv/lib/python3.12/site-packages/llama_stack/templates/ollama/run.yaml --image-type venv
+```
+
+Edit that run.yaml and find
+
+```
+api_key: ${env.TAVILY_SEARCH_API_KEY:+}
+```
+
+Add your API key, save run.yaml
+
+Run the server
+
+```bash
+llama stack run /Users/bsutter/ai-projects/llama-stack-tutorial/.venv/lib/python3.12/site-packages/llama_stack/templates/ollama/run.yaml --image-type venv
+```
 
 Query the registered toolgroups
 
@@ -164,20 +128,13 @@ curl -sS -H "Content-Type: application/json" $LLAMA_STACK_ENDPOINT/v1/toolgroups
 }
 ```
 
-Add 8B model if needed
+Try the Tavily tool to see if it is working
 
 ```bash
-python 1-models-add.py
-```
-
-Try the Tavily tool
-
-```bash
-python 4-tools-tavily.py
+?
 ```
 
 ```bash
-cd langgraph
 python 3-agent-react-builtin-websearch.py
 ```
 

@@ -47,15 +47,6 @@ export LLAMA_STACK_ENDPOINT=$LLAMA_STACK_SERVER
 export LLAMA_STACK_ENDPOINT_OPENAI=$LLAMA_STACK_ENDPOINT/v1/openai/v1
 ```
 
-Reset local data used by Llama Stack Server if using `docker` or `podman`.
-
-
-
-```
-rm -rf ~/.llama
-mkdir -p ~/.llama
-ls ~/.llama
-```
 
 **Terminal 3**
 
@@ -109,6 +100,15 @@ uv run --with llama-stack llama stack build --template ollama --image-type venv 
 
 
 ### docker, podman approach
+
+Reset local data used by Llama Stack Server if using `docker` or `podman`.
+
+```
+rm -rf ~/.llama
+mkdir -p ~/.llama
+ls ~/.llama
+```
+
 
 ```bash
 docker run -it \
