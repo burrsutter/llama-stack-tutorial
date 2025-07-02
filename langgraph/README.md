@@ -171,7 +171,7 @@ mcp::my-python-mcp-server-math
 Test MCP Server
 
 ```bash
-4-test-mcp-python-math.py
+python 4-test-mcp-python-math.py
 ```
 
 ## MCP Weather via Podman
