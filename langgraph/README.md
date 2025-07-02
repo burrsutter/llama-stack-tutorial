@@ -131,17 +131,16 @@ curl -sS -H "Content-Type: application/json" $LLAMA_STACK_ENDPOINT/v1/toolgroups
 Try the Tavily tool to see if it is working
 
 ```bash
-?
+python 3-test-tavily.py
 ```
 
 ```bash
 python 3-agent-react-builtin-websearch.py
 ```
 
-
 ## MCP via LLama Stack
 
-### MCP Server in Python
+### MCP Server in Python: Math
 
 ```bash
 cd ../mcp-servers/python-mcp-server-math
@@ -150,13 +149,13 @@ cd ../mcp-servers/python-mcp-server-math
 Run the MCP Server
 
 ```bash
-npx -y supergateway --port 8001 --stdio "uv --directory /Users/burr/my-projects/llama-stack-tutorial/mcp-servers/python-mcp-server-math run mcp_server_sse_tools.py"
+npx -y supergateway --port 8001 --stdio "uv --directory /Users/burr/ai-projects/llama-stack-tutorial/mcp-servers/python-mcp-server-math run mcp_server_sse_tools.py"
 ```
 
 Register the MCP Server
 
 ```bash
-curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::my-python-mcp-server-math", "mcp_endpoint" : { "uri" : "http://host.docker.internal:8001/sse"}}' $LLAMA_STACK_ENDPOINT/v1/toolgroups
+curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::my-python-mcp-server-math", "mcp_endpoint" : { "uri" : "http://localhost:8001/sse"}}' $LLAMA_STACK_ENDPOINT/v1/toolgroups
 ```
 
 What MCP Servers does LLama Stack have registered?
@@ -169,3 +168,70 @@ curl -sS -H "Content-Type: application/json" $LLAMA_STACK_ENDPOINT/v1/toolgroups
 mcp::my-python-mcp-server-math
 ```
 
+Test MCP Server
+
+```bash
+4-test-mcp-python-math.py
+```
+
+## MCP Weather via Podman
+
+Start MCP Server
+
+```bash
+podman run -p 3001:3001 quay.io/rh-aiservices-bu/mcp-weather:0.1.0
+```
+
+Register MCP Server
+
+```bash
+curl -X POST -H "Content-Type: application/json" --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::weather", "mcp_endpoint" : { "uri" :"http://localhost:3001/sse"}}' http://localhost:8321/v1/toolgroups
+```
+
+Unregister MCP Server
+
+```bash
+curl -X DELETE http://localhost:8321/v1/toolgroups/mcp::weather
+```
+
+```bash
+llama-stack-client toolgroups unregister mcp::weather
+```
+
+Query for MCP Servers
+
+```bash
+curl -sS -H "Content-Type: application/json" $LLAMA_STACK_ENDPOINT/v1/toolgroups | jq -r '.data[] | select(.identifier | startswith("mcp::")) | .identifier'
+```
+
+OR
+
+```bash
+llama-stack-client toolgroups list
+```
+
+```
+lama-stack-client toolgroups list
+INFO:httpx:HTTP Request: GET http://localhost:8321/v1/toolgroups "HTTP/1.1 200 OK"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ identifier                     ┃ provider_id            ┃ args ┃ mcp_endpoint                                                ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ builtin::rag                   │ rag-runtime            │ None │ None                                                        │
+│ builtin::websearch             │ tavily-search          │ None │ None                                                        │
+│ builtin::wolfram_alpha         │ wolfram-alpha          │ None │ None                                                        │
+│ mcp::my-python-mcp-server-math │ model-context-protocol │ None │ McpEndpoint(uri='http://localhost:8001/sse')                │
+│ mcp::weather                   │ model-context-protocol │ None │ McpEndpoint(uri='http://host.containers.internal:3001/sse') │
+└────────────────────────────────┴────────────────────────┴──────┴─────────────────────────────────────────────────────────────┘
+```
+
+Test MCP Server
+
+```bash
+python 4-test-mcp-weather.py
+```
+
+Test with LangGraph
+
+```bash
+python 4-agent-react-mcp-weather.py
+```
