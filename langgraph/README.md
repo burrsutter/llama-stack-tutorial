@@ -83,9 +83,9 @@ Edit that run.yaml and find
 api_key: ${env.TAVILY_SEARCH_API_KEY:+}
 ```
 
-Add your API key, save run.yaml
+Replace `${env.TAVILY_SEARCH_API_KEY:+}` with your API key and save the run.yaml
 
-Run the server
+Run the server with the updated run.yaml
 
 ```bash
 llama stack run /Users/bsutter/ai-projects/llama-stack-tutorial/.venv/lib/python3.12/site-packages/llama_stack/templates/ollama/run.yaml --image-type venv
