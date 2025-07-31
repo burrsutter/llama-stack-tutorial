@@ -59,15 +59,13 @@ python 2-agent-weather.py
 
 ### Web Search: Tavily
 
-Start the Llama Stack Server with the Tavily key set
+
+build the server
 
 
-```bash
-export TAVILY_SEARCH_API_KEY=tvly-dev-stuff
-```
 
 ```bash
-TAVILY_SEARCH_API_KEY=tvly-dev-stuff uv run --with llama-stack llama stack build --template ollama --image-type venv 
+uv run --with llama-stack llama stack build --template ollama --image-type venv 
 ```
 
 Find the run.yaml reference in the output

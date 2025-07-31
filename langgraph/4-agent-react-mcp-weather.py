@@ -30,15 +30,27 @@ llm = ChatOpenAI(
 # Proof of connectivity
 print(llm.invoke("Hello"))
 
-llm_with_tools = llm.bind_tools(
-    [          
-        {
-            "type": "mcp",
-            "server_label": "weather",     
-            "server_url": "http://localhost:3001/sse",       
-            "require_approval": "never",
-        },
-    ])
+# llm_with_tools = llm.bind_tools(
+#     [          
+#         {
+#             "type": "mcp",
+#             "server_label": "weather",     
+#             "server_url": "http://localhost:3001/sse",       
+#             "require_approval": "never",
+#         },
+#     ])
+
+# llm_with_tools = llm.bind_tools(
+#     [          
+#         {
+#             "type": "mcp",
+#             "server_label": "weather"
+#         },
+#     ])
+
+llm_with_tools = llm.bind_tools([{"type": "mcp::weather"}])
+
+
 
 class State(TypedDict):
     messages: Annotated[list, add_messages]
