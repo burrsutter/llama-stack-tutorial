@@ -1,9 +1,7 @@
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage, ToolMessage
-from langchain.agents import tool
+from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
-from langchain.agents.format_scratchpad.openai_tools import format_to_openai_tool_messages
-# from langchain_core.messages import AIMessage
 
 import os
 from dotenv import load_dotenv
@@ -37,8 +35,6 @@ llm = ChatOpenAI(
 # --- Node that runs the agent ---
 def agent_node(state):
     messages = state["messages"]
-    if "scratchpad" in state:
-        messages += format_to_openai_tool_messages(state["scratchpad"])
     response = llm.invoke(messages)
     return {
         "messages": messages + [response],

@@ -1,5 +1,5 @@
-llama-stack-client
-llama_stack
+llama-stack-client==0.3.4
+llama_stack==0.3.4
 aiosqlite
 ollama
 openai

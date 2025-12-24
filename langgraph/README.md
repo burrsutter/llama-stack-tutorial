@@ -34,7 +34,7 @@ uv pip install langgraph langchain openai langchain_openai dotenv langchain_comm
 
 ```bash
 export LLAMA_STACK_ENDPOINT_OPENAI=http://localhost:8321/v1/openai/v1
-export INFERENCE_MODEL=meta-llama/Llama-3.1-8B-Instruct
+export INFERENCE_MODEL=ollama/llama3.1:8b-instruct-fp16
 ```
 
 ```bash
